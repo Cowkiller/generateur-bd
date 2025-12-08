@@ -1,0 +1,72 @@
+[
+  {
+    "id": "001",
+    "nom": "001 - Le test de grossesse",
+    "fichier": "001-Test_de_grossesse.png",
+    "titre": "Le test de grossesse",
+    "dialogue": "- JE PARTAGE TON ENTHOUSIASME CHÉRI, MAIS TU DEVRAIS PAS EMBRASSER LE TEST DE GROSSESSE COMME ÇA!"
+  },
+  {
+    "id": "003",
+    "nom": "003 - La reprise",
+    "fichier": "003-La_reprise.png",
+    "titre": "La reprise",
+    "dialogue": "- DIS-DONC, IL A L'AIR FATIGUÉ DUFLANTIER!\n- IL REVIENT JUSTE DE CONGÉS PATERNITÉ.\n- OH! C'EST POUR ÇA QU'IL NOUS APPELAIT TOUS \"MON P'TIT CHAT\"!"
+  },
+  {
+    "id": "004",
+    "nom": "004 - Les dessins",
+    "fichier": "004-Les_dessins.png",
+    "titre": "les dessins",
+    "dialogue": "- C'EST PAS QU'ON VEUILLE BRIDER TA PASSION ARTISTIQUE, MAIS ON N'EST PEUT-ÊTRE PAS OBLIGÉ DE TOUS LES AFFICHER?\n- ON N'EN PEUT PLUS DE TES DESSINS POURRIS TIMOTHY!!!"
+  },
+  {
+    "id": "006",
+    "nom": "006 - Le prénom",
+    "fichier": "006-Le_prénom.png",
+    "titre": "le prénom",
+    "dialogue": "- 3 PRÉNOMS SUR UN POST-IT, J'APPELLE PAS ÇA UNE LISTE PATRICK !\n- ET TU PEUX ME DIRE POURQUOI JE NE TROUVE PAS \"GANDALF\" DANS TA LISTE POURTANT TRÈS LONGUE, SUSANNE ?!?"
+  },
+  {
+    "id": "012",
+    "nom": "012 - Le faire-part",
+    "fichier": "012-le_faire-part.png",
+    "titre": "le faire-part",
+    "dialogue": "- NON THOMAS, ON NE PEUT PAS DIRE QU'ON REGRETTE SUR UN FAIRE-PART DE NAISSANCE !!!\n- MAIS ON SE DOIT DE PRÉVENIR LES FUTURS-PARENTS NON??\n...\nOU ALORS ON LE MET EN TOUT PETIT?"
+  },
+  {
+    "id": "024",
+    "nom": "024 - Le guet-apens",
+    "fichier": "024-le_guet-apens.png",
+    "titre": "le guet-apens",
+    "dialogue": "- PRÉSIDENT ! PRÉSIDENT ! PRÉSIDENT !\n- JE SAIS BIEN QUE JE DEVAIS JUSTE OBSERVER CHÉRIE... JE NE COMPRENDS PAS CE QU'IL S'EST PASSÉ !"
+  },
+  {
+    "id": "035",
+    "nom": "035-La rancune",
+    "fichier": "035-La rancune.jpeg",
+    "titre": "la rancune",
+    "dialogue": "- PAPAAA !?! MAIS POURQUOI TU M'EMPÊCHES DE DORMIR TOUS LES DIMANCHES MATIN ???\n- C'EST EXACTEMENT LA MÊME QUESTION QUE JE T'AI POSÉE, CHAQUE WEEK-END, JUSQU'À TES 7 ANS."
+  },
+  {
+    "id": "036",
+    "nom": "036-La purée",
+    "fichier": "036-La_purée.jpeg",
+    "titre": "la purée",
+    "dialogue": "- ... À TES SOUHAITS."
+  },
+  {
+    "id": "038",
+    "nom": "038-La bagarre",
+    "fichier": "038-La bagarre.jpeg",
+    "titre": "la bagarre",
+    "dialogue": "- OH MON DIEU ! MAIS QU'EST-CE QU'IL T'ES ARRIVÉ SIMON? UN ACCIDENT DE VOITURE ? UNE BAGARRE ?\n- NON NON. J'AI JUSTE PASSÉ LA NUIT DANS LE MÊME LIT QUE LUKE..."
+  },
+  {
+    "id": "042",
+    "nom": "042 - La négociation",
+    "fichier": "042 - la Négociation .png",
+    "titre": "la négociation",
+    "dialogue": "- ALLEZ MON LOULOU, JE M'EXCUSE D'AVOIR TIRÉ LA CHASSE À TA PLACE... ET SI ON DIT QUE LA PROCHAINE FOIS QUE JE FAIS CACA, C'EST TOI QUI FAIS, ÇA VA MIEUX ?"
+  }  
+]
