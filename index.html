@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMOUR* & CHEVEUX BLANCS - Générateur de BD</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: 'Crimson Text', Georgia, serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script>
+        // ============================================================
+        // CONFIGURATION - MODIFIE CETTE URL AVEC TON URL GITHUB PAGES
+        // ============================================================
+        const BASE_URL = 'https://Cowkiller.github.io/generateur-bd';
+        // Exemple: 'https://julien-music.github.io/generateur-bd'
+        // ============================================================
+
+        // Base de données des dessins intégrée directement
+        const DESSINS_DATA = [
+          {
+            id: '001',
+            nom: '001 - Le test de grossesse',
+            fichier: '001-Test_de_grossesse.png',
+            titre: 'Le test de grossesse',
+            dialogue: '- JE PARTAGE TON ENTHOUSIASME CHÉRI, MAIS TU DEVRAIS PAS EMBRASSER LE TEST DE GROSSESSE COMME ÇA!'
+          },
+          {
+            id: '003',
+            nom: '003 - La reprise',
+            fichier: '003-La_reprise.png',
+            titre: 'La reprise',
+            dialogue: '- DIS-DONC, IL A L\'AIR FATIGUÉ DUFLANTIER!\n- IL REVIENT JUSTE DE CONGÉS PATERNITÉ.\n- OH! C\'EST POUR ÇA QU\'IL NOUS APPELAIT TOUS "MON P\'TIT CHAT"!'
+          },
+          {
+            id: '004',
+            nom: '004 - Les dessins',
+            fichier: '004-Les_dessins.png',
+            titre: 'les dessins',
+            dialogue: '- C\'EST PAS QU\'ON VEUILLE BRIDER TA PASSION ARTISTIQUE, MAIS ON N\'EST PEUT-ÊTRE PAS OBLIGÉ DE TOUS LES AFFICHER?\n- ON N\'EN PEUT PLUS DE TES DESSINS POURRIS TIMOTHY!!!'
+          },
+          {
+            id: '006',
+            nom: '006 - Le prénom',
+            fichier: '006-Le_prénom.png',
+            titre: 'le prénom',
+            dialogue: '- 3 PRÉNOMS SUR UN POST-IT, J\'APPELLE PAS ÇA UNE LISTE PATRICK !\n- ET TU PEUX ME DIRE POURQUOI JE NE TROUVE PAS "GANDALF" DANS TA LISTE POURTANT TRÈS LONGUE, SUSANNE ?!?'
+          },
+          {
+            id: '012',
+            nom: '012 - Le faire-part',
+            fichier: '012-le_faire-part.png',
+            titre: 'le faire-part',
+            dialogue: '- NON THOMAS, ON NE PEUT PAS DIRE QU\'ON REGRETTE SUR UN FAIRE-PART DE NAISSANCE !!!\n- MAIS ON SE DOIT DE PRÉVENIR LES FUTURS-PARENTS NON??\n...\nOU ALORS ON LE MET EN TOUT PETIT?'
+          },
+          {
+            id: '024',
+            nom: '024 - Le guet-apens',
+            fichier: '024-le_guet-apens.png',
+            titre: 'le guet-apens',
+            dialogue: '- PRÉSIDENT ! PRÉSIDENT ! PRÉSIDENT !\n- JE SAIS BIEN QUE JE DEVAIS JUSTE OBSERVER CHÉRIE... JE NE COMPRENDS PAS CE QU\'IL S\'EST PASSÉ !'
+          },
+          {
+            id: '042',
+            nom: '042 - La négociation',
+            fichier: '042 - la Négociation .png',
+            titre: 'la négociation',
+            dialogue: '- ALLEZ MON LOULOU, JE M\'EXCUSE D\'AVOIR TIRÉ LA CHASSE À TA PLACE... ET SI ON DIT QUE LA PROCHAINE FOIS QUE JE FAIS CACA, C\'EST TOI QUI FAIS, ÇA VA MIEUX ?'
+          },
+          {
+            id: 'wa1',
+            nom: 'La rancune',
+            fichier: 'WhatsApp_Image_2025-12-04_at_17_17_40.jpeg',
+            titre: 'la rancune',
+            dialogue: '- PAPAAA !?! MAIS POURQUOI TU M\'EMPÊCHES DE DORMIR TOUS LES DIMANCHES MATIN ???\n- C\'EST EXACTEMENT LA MÊME QUESTION QUE JE T\'AI POSÉE, CHAQUE WEEK-END, JUSQU\'À TES 7 ANS.'
+          },
+          {
+            id: 'wa2',
+            nom: 'La bagarre',
+            fichier: 'WhatsApp_Image_2025-12-04_at_17_17_41__1_.jpeg',
+            titre: 'la bagarre',
+            dialogue: '- OH MON DIEU ! MAIS QU\'EST-CE QU\'IL T\'ES ARRIVÉ SIMON? UN ACCIDENT DE VOITURE ? UNE BAGARRE ?\n- NON NON. J\'AI JUSTE PASSÉ LA NUIT DANS LE MÊME LIT QUE LUKE...'
+          },
+          {
+            id: 'wa3',
+            nom: 'La purée',
+            fichier: 'WhatsApp_Image_2025-12-04_at_17_17_43__1_.jpeg',
+            titre: 'la purée',
+            dialogue: '- ... À TES SOUHAITS.'
+          }
+        ];
+    </script>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+
+        // Composant principal
+        function BDGenerator() {
+          const [titre, setTitre] = useState('');
+          const [dialogue, setDialogue] = useState('');
+          const [dessinImage, setDessinImage] = useState(null);
+          const [cadreImage, setCadreImage] = useState(null);
+          const [selectedDessinId, setSelectedDessinId] = useState('');
+          const [fontLoaded, setFontLoaded] = useState(false);
+          const canvasRef = useRef(null);
+
+          // Charger les polices personnalisées depuis GitHub
+          useEffect(() => {
+            const loadFonts = async () => {
+              try {
+                // Charger ComicNoteSmooth pour les dialogues
+                const comicFont = new FontFace('ComicNoteSmooth', `url(${BASE_URL}/ComicNoteSmooth.ttf)`);
+                await comicFont.load();
+                document.fonts.add(comicFont);
+                
+                // Charger Fragmentcore pour le titre
+                const fragmentFont = new FontFace('Fragmentcore', `url(${BASE_URL}/Fragmentcore.otf)`);
+                await fragmentFont.load();
+                document.fonts.add(fragmentFont);
+                
+                setFontLoaded(true);
+              } catch (error) {
+                console.error('Erreur lors du chargement des polices:', error);
+                setFontLoaded(true); // Continuer même en cas d'erreur
+              }
+            };
+            
+            loadFonts();
+          }, []);
+
+          // Charger l'image du cadre au démarrage depuis GitHub
+          useEffect(() => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+              setCadreImage(img);
+            };
+            img.src = `${BASE_URL}/cadre.png`;
+          }, []);
+
+          // Gérer la sélection d'un dessin dans la liste déroulante
+          const handleDessinSelect = (e) => {
+            const dessinId = e.target.value;
+            setSelectedDessinId(dessinId);
+            
+            if (!dessinId) {
+              setTitre('');
+              setDialogue('');
+              setDessinImage(null);
+              return;
+            }
+            
+            const dessin = DESSINS_DATA.find(d => d.id === dessinId);
+            if (dessin) {
+              setTitre(dessin.titre);
+              setDialogue(dessin.dialogue);
+              
+              // Charger l'image depuis GitHub (sous-répertoire img/)
+              const img = new Image();
+              img.crossOrigin = 'anonymous';
+              img.onload = () => {
+                setDessinImage(img);
+              };
+              img.onerror = () => {
+                console.error('Erreur lors du chargement de l\'image:', dessin.fichier);
+              };
+              img.src = `${BASE_URL}/img/${dessin.fichier}`;
+            }
+          };
+
+          // Fonction pour découper le texte en lignes avec une largeur maximale
+          const wrapText = (ctx, text, maxWidth) => {
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = '';
+            
+            words.forEach(word => {
+              const testLine = currentLine + (currentLine ? ' ' : '') + word;
+              const metrics = ctx.measureText(testLine);
+              if (metrics.width > maxWidth && currentLine) {
+                lines.push(currentLine);
+                currentLine = word;
+              } else {
+                currentLine = testLine;
+              }
+            });
+            if (currentLine) lines.push(currentLine);
+            
+            return lines;
+          };
+
+          // Dessiner l'aperçu
+          useEffect(() => {
+            if (!fontLoaded) return;
+            
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = 1024;
+            const height = 1024;
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Fond blanc
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Dessiner l'image du dessin
+            if (dessinImage) {
+              const drawX = 0;
+              const drawY = 0;
+              const drawWidth = width;
+              const drawHeight = height;
+              
+              // Calculer les proportions pour garder le ratio
+              const imgRatio = dessinImage.width / dessinImage.height;
+              const boxRatio = drawWidth / drawHeight;
+              
+              let finalWidth, finalHeight, finalX, finalY;
+              
+              if (imgRatio > boxRatio) {
+                finalWidth = drawWidth;
+                finalHeight = drawWidth / imgRatio;
+                finalX = drawX;
+                finalY = drawY + (drawHeight - finalHeight) / 2;
+              } else {
+                finalHeight = drawHeight;
+                finalWidth = drawHeight * imgRatio;
+                finalX = drawX + (drawWidth - finalWidth) / 2;
+                finalY = drawY;
+              }
+              
+              ctx.drawImage(dessinImage, finalX, finalY, finalWidth, finalHeight);
+            }
+            
+            // Dessiner le cadre si disponible
+            if (cadreImage) {
+              ctx.drawImage(cadreImage, 0, 0, width, height);
+            }
+            
+            // Titre (en haut à droite avec police Fragmentcore, largeur max 400px)
+            ctx.fillStyle = '#000000';
+            ctx.font = '34px Fragmentcore, Georgia, serif';
+            ctx.textAlign = 'center';
+            
+            const maxTitreWidth = 400;
+            const titreMetrics = ctx.measureText(titre);
+            
+            if (titreMetrics.width > maxTitreWidth) {
+                // Découper le titre en 2 lignes
+                const words = titre.split(' ');
+                let ligne1 = '';
+                let ligne2 = '';
+                
+                for (let i = 0; i < words.length; i++) {
+                    const testLine = ligne1 + (ligne1 ? ' ' : '') + words[i];
+                    if (ctx.measureText(testLine).width <= maxTitreWidth) {
+                        ligne1 = testLine;
+                    } else {
+                        ligne2 = words.slice(i).join(' ');
+                        break;
+                    }
+                }
+                
+                // Si pas de découpe naturelle, forcer au milieu
+                if (!ligne2 && ligne1 === titre) {
+                    const mid = Math.ceil(words.length / 2);
+                    ligne1 = words.slice(0, mid).join(' ');
+                    ligne2 = words.slice(mid).join(' ');
+                }
+                
+                // Afficher sur 2 lignes (remonté de 15px)
+                const lineHeight = 32;
+                ctx.fillText(ligne1, 735, 43);
+                ctx.fillText(ligne2, 735, 43 + lineHeight);
+            } else {
+                // Titre sur une seule ligne
+                ctx.fillText(titre, 735, 58);
+            }
+
+            // Dialogue (en bas avec police ComicNoteSmooth)
+            ctx.font = '40px ComicNoteSmooth, Arial, sans-serif';
+            ctx.textAlign = 'left';
+            
+            // Traiter les retours à la ligne explicites et le wrapping
+            const dialogueLines = [];
+            const explicitLines = dialogue.split('\n');
+            const maxWidth = width - 60;
+            
+            explicitLines.forEach(explicitLine => {
+              const wrappedLines = wrapText(ctx, explicitLine, maxWidth);
+              dialogueLines.push(...wrappedLines);
+            });
+            
+            // Dessiner les lignes de dialogue
+            const dialogueY = height - 175;
+            const lineHeight = 30;
+            dialogueLines.forEach((line, i) => {
+              ctx.fillText(line, 30, dialogueY + i * lineHeight);
+            });
+            
+            // Signature TRCK
+            ctx.font = 'bold 24px Arial, sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText('TRCK', width - 30, height - 20);
+            
+          }, [dessinImage, cadreImage, titre, dialogue, fontLoaded]);
+
+          // Exporter en PNG
+          const exporterPNG = () => {
+            const canvas = canvasRef.current;
+            if (!canvas) {
+              console.error('Canvas non disponible');
+              return;
+            }
+            
+            try {
+              // Créer un nouveau canvas pour l'export afin d'éviter les problèmes CORS
+              const exportCanvas = document.createElement('canvas');
+              const exportCtx = exportCanvas.getContext('2d');
+              const width = 1024;
+              const height = 1024;
+              
+              exportCanvas.width = width;
+              exportCanvas.height = height;
+              
+              // Fond blanc
+              exportCtx.fillStyle = '#ffffff';
+              exportCtx.fillRect(0, 0, width, height);
+              
+              // Redessiner l'image du dessin
+              if (dessinImage) {
+                const imgRatio = dessinImage.width / dessinImage.height;
+                const boxRatio = width / height;
+                
+                let finalWidth, finalHeight, finalX, finalY;
+                
+                if (imgRatio > boxRatio) {
+                  finalWidth = width;
+                  finalHeight = width / imgRatio;
+                  finalX = 0;
+                  finalY = (height - finalHeight) / 2;
+                } else {
+                  finalHeight = height;
+                  finalWidth = height * imgRatio;
+                  finalX = (width - finalWidth) / 2;
+                  finalY = 0;
+                }
+                
+                exportCtx.drawImage(dessinImage, finalX, finalY, finalWidth, finalHeight);
+              }
+              
+              // Redessiner le cadre
+              if (cadreImage) {
+                exportCtx.drawImage(cadreImage, 0, 0, width, height);
+              }
+              
+              // Redessiner le titre
+              exportCtx.fillStyle = '#000000';
+              exportCtx.font = '30px Fragmentcore, Georgia, serif';
+              exportCtx.textAlign = 'center';
+              
+              const maxTitreWidth = 400;
+              const titreMetrics = exportCtx.measureText(titre);
+              
+              if (titreMetrics.width > maxTitreWidth) {
+                const words = titre.split(' ');
+                let ligne1 = '';
+                let ligne2 = '';
+                
+                for (let i = 0; i < words.length; i++) {
+                  const testLine = ligne1 + (ligne1 ? ' ' : '') + words[i];
+                  if (exportCtx.measureText(testLine).width <= maxTitreWidth) {
+                    ligne1 = testLine;
+                  } else {
+                    ligne2 = words.slice(i).join(' ');
+                    break;
+                  }
+                }
+                
+                if (!ligne2 && ligne1 === titre) {
+                  const mid = Math.ceil(words.length / 2);
+                  ligne1 = words.slice(0, mid).join(' ');
+                  ligne2 = words.slice(mid).join(' ');
+                }
+                
+                exportCtx.fillText(ligne1, 735, 43);
+                exportCtx.fillText(ligne2, 735, 75);
+              } else {
+                exportCtx.fillText(titre, 735, 58);
+              }
+              
+              // Redessiner le dialogue
+              exportCtx.font = '40px ComicNoteSmooth, Arial, sans-serif';
+              exportCtx.textAlign = 'left';
+              
+              const dialogueLines = [];
+              const explicitLines = dialogue.split('\n');
+              const maxWidth = width - 60;
+              
+              explicitLines.forEach(explicitLine => {
+                const wrappedLines = wrapText(exportCtx, explicitLine, maxWidth);
+                dialogueLines.push(...wrappedLines);
+              });
+              
+              const dialogueY = height - 175;
+              const lineHeight = 30;
+              dialogueLines.forEach((line, i) => {
+                exportCtx.fillText(line, 30, dialogueY + i * lineHeight);
+              });
+              
+              // Signature
+              exportCtx.font = 'bold 24px Arial, sans-serif';
+              exportCtx.textAlign = 'right';
+              exportCtx.fillText('TRCK', width - 30, height - 20);
+              
+              // Exporter le canvas
+              exportCanvas.toBlob((blob) => {
+                if (!blob) {
+                  console.error('Impossible de créer le blob');
+                  return;
+                }
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                const filename = titre.replace(/[^a-zA-Z0-9àâäéèêëïîôùûüç]/gi, '_') || 'bd_amour';
+                link.download = `${filename}.png`;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+              }, 'image/png');
+            } catch (error) {
+              console.error('Erreur lors de l\'export:', error);
+              alert('Erreur lors de l\'export. Vérifiez que les images sont accessibles.');
+            }
+          };
+
+          return (
+            <div style={{
+              minHeight: '100vh',
+              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+              fontFamily: "'Crimson Text', Georgia, serif",
+              color: '#f0e6d3',
+              padding: '40px 20px'
+            }}>
+              {/* En-tête */}
+              <header style={{
+                textAlign: 'center',
+                marginBottom: '50px'
+              }}>
+                <h1 style={{
+                  fontSize: '3.5rem',
+                  fontWeight: '400',
+                  letterSpacing: '0.15em',
+                  textTransform: 'uppercase',
+                  margin: '0 0 10px 0',
+                  background: 'linear-gradient(90deg, #e94560, #ff6b6b, #feca57)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  textShadow: 'none'
+                }}>
+                  AMOUR*
+                </h1>
+                <p style={{
+                  fontSize: '1.1rem',
+                  letterSpacing: '0.3em',
+                  opacity: 0.8,
+                  margin: 0
+                }}>
+                  * & CHEVEUX BLANCS — GÉNÉRATEUR DE BD
+                </p>
+              </header>
+
+              <div style={{
+                maxWidth: '1400px',
+                margin: '0 auto',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '40px',
+                alignItems: 'start'
+              }}>
+                {/* Panneau de contrôle */}
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderRadius: '20px',
+                  padding: '35px',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }}>
+                  <h2 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '400',
+                    marginTop: 0,
+                    marginBottom: '30px',
+                    paddingBottom: '15px',
+                    borderBottom: '2px solid rgba(233, 69, 96, 0.5)'
+                  }}>
+                    Édition
+                  </h2>
+
+                  {/* Sélection du dessin */}
+                  <div style={{ marginBottom: '25px' }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.9rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      marginBottom: '12px',
+                      color: '#feca57'
+                    }}>
+                      🎨 Sélectionner un dessin
+                    </label>
+                    <select
+                      value={selectedDessinId}
+                      onChange={handleDessinSelect}
+                      style={{
+                        width: '100%',
+                        padding: '15px 18px',
+                        fontSize: '1.1rem',
+                        fontFamily: "'Crimson Text', Georgia, serif",
+                        background: 'rgba(0, 0, 0, 0.4)',
+                        border: '2px solid rgba(255, 255, 255, 0.15)',
+                        borderRadius: '10px',
+                        color: '#f0e6d3',
+                        outline: 'none',
+                        cursor: 'pointer',
+                        transition: 'border-color 0.3s ease',
+                        boxSizing: 'border-box',
+                        appearance: 'none',
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f0e6d3' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 15px center'
+                      }}
+                    >
+                      <option value="">-- Choisir un dessin --</option>
+                      {DESSINS_DATA.map(dessin => (
+                        <option key={dessin.id} value={dessin.id} style={{ background: '#1a1a2e', color: '#f0e6d3' }}>
+                          {dessin.nom}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Titre */}
+                  <div style={{ marginBottom: '25px' }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.9rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      marginBottom: '12px',
+                      color: '#feca57'
+                    }}>
+                      ✏️ Titre de l'anecdote
+                    </label>
+                    <input
+                      type="text"
+                      value={titre}
+                      onChange={(e) => setTitre(e.target.value)}
+                      style={{
+                        width: '100%',
+                        padding: '15px 18px',
+                        fontSize: '1.1rem',
+                        fontFamily: "'Crimson Text', Georgia, serif",
+                        fontStyle: 'italic',
+                        background: 'rgba(0, 0, 0, 0.4)',
+                        border: '2px solid rgba(255, 255, 255, 0.15)',
+                        borderRadius: '10px',
+                        color: '#f0e6d3',
+                        outline: 'none',
+                        transition: 'border-color 0.3s ease',
+                        boxSizing: 'border-box'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = 'rgba(233, 69, 96, 0.6)'}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+                    />
+                  </div>
+
+                  {/* Dialogue */}
+                  <div style={{ marginBottom: '30px' }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.9rem',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.1em',
+                      marginBottom: '12px',
+                      color: '#feca57'
+                    }}>
+                      💬 Dialogue
+                    </label>
+                    <textarea
+                      value={dialogue}
+                      onChange={(e) => setDialogue(e.target.value)}
+                      rows={6}
+                      style={{
+                        width: '100%',
+                        padding: '15px 18px',
+                        fontSize: '1rem',
+                        fontFamily: "'Arial', sans-serif",
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase',
+                        background: 'rgba(0, 0, 0, 0.4)',
+                        border: '2px solid rgba(255, 255, 255, 0.15)',
+                        borderRadius: '10px',
+                        color: '#f0e6d3',
+                        outline: 'none',
+                        resize: 'vertical',
+                        lineHeight: '1.5',
+                        transition: 'border-color 0.3s ease',
+                        boxSizing: 'border-box'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = 'rgba(233, 69, 96, 0.6)'}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+                    />
+                  </div>
+
+                  {/* Bouton d'export */}
+                  <div>
+                    <button
+                      onClick={exporterPNG}
+                      disabled={!dessinImage}
+                      style={{
+                        width: '100%',
+                        padding: '16px 24px',
+                        fontSize: '1rem',
+                        fontWeight: '600',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        background: dessinImage ? 'linear-gradient(135deg, #e94560, #ff6b6b)' : 'rgba(100, 100, 100, 0.3)',
+                        border: 'none',
+                        borderRadius: '12px',
+                        color: dessinImage ? '#ffffff' : '#666',
+                        cursor: dessinImage ? 'pointer' : 'not-allowed',
+                        boxShadow: dessinImage ? '0 4px 20px rgba(233, 69, 96, 0.4)' : 'none',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseOver={(e) => {
+                        if (dessinImage) {
+                          e.target.style.transform = 'translateY(-2px)';
+                          e.target.style.boxShadow = '0 6px 25px rgba(233, 69, 96, 0.5)';
+                        }
+                      }}
+                      onMouseOut={(e) => {
+                        if (dessinImage) {
+                          e.target.style.transform = 'translateY(0)';
+                          e.target.style.boxShadow = '0 4px 20px rgba(233, 69, 96, 0.4)';
+                        }
+                      }}
+                    >
+                      📥 Exporter PNG
+                    </button>
+                  </div>
+                </div>
+
+                {/* Aperçu */}
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.05)',
+                  borderRadius: '20px',
+                  padding: '35px',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }}>
+                  <h2 style={{
+                    fontSize: '1.5rem',
+                    fontWeight: '400',
+                    marginTop: 0,
+                    marginBottom: '30px',
+                    paddingBottom: '15px',
+                    borderBottom: '2px solid rgba(233, 69, 96, 0.5)'
+                  }}>
+                    Aperçu
+                  </h2>
+                  
+                  <div style={{
+                    background: '#ffffff',
+                    borderRadius: '12px',
+                    padding: '10px',
+                    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)'
+                  }}>
+                    <canvas
+                      ref={canvasRef}
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                        display: 'block',
+                        borderRadius: '8px'
+                      }}
+                    />
+                  </div>
+
+                  {!dessinImage && (
+                    <p style={{
+                      textAlign: 'center',
+                      marginTop: '20px',
+                      opacity: 0.6,
+                      fontStyle: 'italic'
+                    }}>
+                      ↑ Sélectionnez un dessin pour voir l'aperçu
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Footer */}
+              <footer style={{
+                textAlign: 'center',
+                marginTop: '60px',
+                padding: '20px',
+                opacity: 0.5,
+                fontSize: '0.9rem'
+              }}>
+                Générateur pour la série AMOUR* & CHEVEUX BLANCS
+              </footer>
+            </div>
+          );
+        }
+
+        // Rendre l'application
+        ReactDOM.render(<BDGenerator />, document.getElementById('root'));
+    </script>
+</body>
+</html>
