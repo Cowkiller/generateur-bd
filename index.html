@@ -118,18 +118,26 @@
           const [selectedDessinId, setSelectedDessinId] = useState('');
           const [fontLoaded, setFontLoaded] = useState(false);
           const [mirrorHorizontal, setMirrorHorizontal] = useState(false);
+          const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
           const canvasRef = useRef(null);
+
+          // Détecter le redimensionnement de la fenêtre
+          useEffect(() => {
+            const handleResize = () => {
+              setIsMobile(window.innerWidth < 768);
+            };
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+          }, []);
 
           // Charger les polices personnalisées depuis GitHub
           useEffect(() => {
             const loadFonts = async () => {
               try {
-                // Charger ComicNoteSmooth pour les dialogues
                 const comicFont = new FontFace('ComicNoteSmooth', `url(${BASE_URL}/ComicNoteSmooth.ttf)`);
                 await comicFont.load();
                 document.fonts.add(comicFont);
                 
-                // Charger Fragmentcore pour le titre
                 const fragmentFont = new FontFace('Fragmentcore', `url(${BASE_URL}/Fragmentcore.otf)`);
                 await fragmentFont.load();
                 document.fonts.add(fragmentFont);
@@ -137,24 +145,21 @@
                 setFontLoaded(true);
               } catch (error) {
                 console.error('Erreur lors du chargement des polices:', error);
-                setFontLoaded(true); // Continuer même en cas d'erreur
+                setFontLoaded(true);
               }
             };
-            
             loadFonts();
           }, []);
 
-          // Charger l'image du cadre au démarrage depuis GitHub
+          // Charger l'image du cadre au démarrage
           useEffect(() => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
-            img.onload = () => {
-              setCadreImage(img);
-            };
+            img.onload = () => setCadreImage(img);
             img.src = `${BASE_URL}/cadre.png`;
           }, []);
 
-          // Gérer la sélection d'un dessin dans la liste déroulante
+          // Gérer la sélection d'un dessin
           const handleDessinSelect = (e) => {
             const dessinId = e.target.value;
             setSelectedDessinId(dessinId);
@@ -171,20 +176,15 @@
               setTitre(dessin.titre);
               setDialogue(dessin.dialogue);
               
-              // Charger l'image depuis GitHub (sous-répertoire img/)
               const img = new Image();
               img.crossOrigin = 'anonymous';
-              img.onload = () => {
-                setDessinImage(img);
-              };
-              img.onerror = () => {
-                console.error('Erreur lors du chargement de l\'image:', dessin.fichier);
-              };
+              img.onload = () => setDessinImage(img);
+              img.onerror = () => console.error('Erreur chargement:', dessin.fichier);
               img.src = `${BASE_URL}/img/${dessin.fichier}`;
             }
           };
 
-          // Fonction pour découper le texte en lignes avec une largeur maximale
+          // Fonction pour découper le texte en lignes
           const wrapText = (ctx, text, maxWidth) => {
             const words = text.split(' ');
             const lines = [];
@@ -201,7 +201,6 @@
               }
             });
             if (currentLine) lines.push(currentLine);
-            
             return lines;
           };
 
@@ -227,14 +226,10 @@
             }
             
             if (applyMirror) {
-              // Sauvegarder l'état du contexte
               ctx.save();
-              // Déplacer l'origine au centre, inverser horizontalement, puis redéplacer
               ctx.translate(width, 0);
               ctx.scale(-1, 1);
-              // Dessiner l'image (les coordonnées sont maintenant inversées)
               ctx.drawImage(dessinImage, width - finalX - finalWidth, finalY, finalWidth, finalHeight);
-              // Restaurer l'état du contexte
               ctx.restore();
             } else {
               ctx.drawImage(dessinImage, finalX, finalY, finalWidth, finalHeight);
@@ -255,19 +250,16 @@
             canvas.width = width;
             canvas.height = height;
             
-            // Fond blanc
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, width, height);
             
-            // Dessiner l'image du dessin (avec miroir si activé)
             drawDessin(ctx, width, height, mirrorHorizontal);
             
-            // Dessiner le cadre si disponible (PAS de miroir sur le cadre)
             if (cadreImage) {
               ctx.drawImage(cadreImage, 0, 0, width, height);
             }
             
-            // Titre (en haut à droite avec police Fragmentcore, largeur max 400px)
+            // Titre
             ctx.fillStyle = '#000000';
             ctx.font = '34px Fragmentcore, Georgia, serif';
             ctx.textAlign = 'center';
@@ -276,7 +268,6 @@
             const titreMetrics = ctx.measureText(titre);
             
             if (titreMetrics.width > maxTitreWidth) {
-                // Découper le titre en 2 lignes
                 const words = titre.split(' ');
                 let ligne1 = '';
                 let ligne2 = '';
@@ -291,27 +282,22 @@
                     }
                 }
                 
-                // Si pas de découpe naturelle, forcer au milieu
                 if (!ligne2 && ligne1 === titre) {
                     const mid = Math.ceil(words.length / 2);
                     ligne1 = words.slice(0, mid).join(' ');
                     ligne2 = words.slice(mid).join(' ');
                 }
                 
-                // Afficher sur 2 lignes (remonté de 15px)
-                const lineHeight = 32;
                 ctx.fillText(ligne1, 735, 43);
-                ctx.fillText(ligne2, 735, 43 + lineHeight);
+                ctx.fillText(ligne2, 735, 75);
             } else {
-                // Titre sur une seule ligne
                 ctx.fillText(titre, 735, 58);
             }
 
-            // Dialogue (en bas avec police ComicNoteSmooth)
+            // Dialogue
             ctx.font = '40px ComicNoteSmooth, Arial, sans-serif';
             ctx.textAlign = 'left';
             
-            // Traiter les retours à la ligne explicites et le wrapping
             const dialogueLines = [];
             const explicitLines = dialogue.split('\n');
             const maxWidth = width - 60;
@@ -321,14 +307,13 @@
               dialogueLines.push(...wrappedLines);
             });
             
-            // Dessiner les lignes de dialogue
             const dialogueY = height - 175;
             const lineHeight = 30;
             dialogueLines.forEach((line, i) => {
               ctx.fillText(line, 30, dialogueY + i * lineHeight);
             });
             
-            // Signature TRCK
+            // Signature
             ctx.font = 'bold 24px Arial, sans-serif';
             ctx.textAlign = 'right';
             ctx.fillText('TRCK', width - 30, height - 20);
@@ -338,13 +323,9 @@
           // Exporter en PNG
           const exporterPNG = () => {
             const canvas = canvasRef.current;
-            if (!canvas) {
-              console.error('Canvas non disponible');
-              return;
-            }
+            if (!canvas) return;
             
             try {
-              // Créer un nouveau canvas pour l'export afin d'éviter les problèmes CORS
               const exportCanvas = document.createElement('canvas');
               const exportCtx = exportCanvas.getContext('2d');
               const width = 1024;
@@ -353,11 +334,9 @@
               exportCanvas.width = width;
               exportCanvas.height = height;
               
-              // Fond blanc
               exportCtx.fillStyle = '#ffffff';
               exportCtx.fillRect(0, 0, width, height);
               
-              // Redessiner l'image du dessin (avec miroir si activé)
               if (dessinImage) {
                 const imgRatio = dessinImage.width / dessinImage.height;
                 const boxRatio = width / height;
@@ -387,14 +366,13 @@
                 }
               }
               
-              // Redessiner le cadre (PAS de miroir)
               if (cadreImage) {
                 exportCtx.drawImage(cadreImage, 0, 0, width, height);
               }
               
-              // Redessiner le titre
+              // Titre
               exportCtx.fillStyle = '#000000';
-              exportCtx.font = '30px Fragmentcore, Georgia, serif';
+              exportCtx.font = '34px Fragmentcore, Georgia, serif';
               exportCtx.textAlign = 'center';
               
               const maxTitreWidth = 400;
@@ -427,7 +405,7 @@
                 exportCtx.fillText(titre, 735, 58);
               }
               
-              // Redessiner le dialogue
+              // Dialogue
               exportCtx.font = '40px ComicNoteSmooth, Arial, sans-serif';
               exportCtx.textAlign = 'left';
               
@@ -446,18 +424,12 @@
                 exportCtx.fillText(line, 30, dialogueY + i * lineHeight);
               });
               
-              // Signature
               exportCtx.font = 'bold 24px Arial, sans-serif';
               exportCtx.textAlign = 'right';
               exportCtx.fillText('TRCK', width - 30, height - 20);
               
-              // Exporter le canvas
               exportCanvas.toBlob((blob) => {
-                if (!blob) {
-                  console.error('Impossible de créer le blob');
-                  return;
-                }
-                
+                if (!blob) return;
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 const filename = titre.replace(/[^a-zA-Z0-9àâäéèêëïîôùûüç]/gi, '_') || 'bd_amour';
@@ -466,14 +438,259 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                
                 setTimeout(() => URL.revokeObjectURL(url), 100);
               }, 'image/png');
             } catch (error) {
-              console.error('Erreur lors de l\'export:', error);
-              alert('Erreur lors de l\'export. Vérifiez que les images sont accessibles.');
+              console.error('Erreur export:', error);
+              alert('Erreur lors de l\'export.');
             }
           };
+
+          // Composant Aperçu
+          const ApercuPanel = () => (
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              borderRadius: isMobile ? '15px' : '20px',
+              padding: isMobile ? '15px' : '35px',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}>
+              <div style={{
+                background: '#ffffff',
+                borderRadius: isMobile ? '8px' : '12px',
+                padding: isMobile ? '5px' : '10px',
+                boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)'
+              }}>
+                <canvas
+                  ref={canvasRef}
+                  style={{
+                    width: '100%',
+                    height: 'auto',
+                    display: 'block',
+                    borderRadius: isMobile ? '6px' : '8px'
+                  }}
+                />
+              </div>
+
+              {!dessinImage && (
+                <p style={{
+                  textAlign: 'center',
+                  marginTop: isMobile ? '15px' : '20px',
+                  opacity: 0.6,
+                  fontStyle: 'italic',
+                  fontSize: isMobile ? '0.9rem' : '1rem'
+                }}>
+                  {isMobile ? '👇 Choisissez un dessin ci-dessous' : '↑ Sélectionnez un dessin pour voir l\'aperçu'}
+                </p>
+              )}
+            </div>
+          );
+
+          // Composant Panneau de contrôle
+          const ControlPanel = () => (
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.05)',
+              borderRadius: isMobile ? '15px' : '20px',
+              padding: isMobile ? '20px' : '35px',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}>
+              <h2 style={{
+                fontSize: isMobile ? '1.2rem' : '1.5rem',
+                fontWeight: '400',
+                marginTop: 0,
+                marginBottom: isMobile ? '20px' : '30px',
+                paddingBottom: '15px',
+                borderBottom: '2px solid rgba(233, 69, 96, 0.5)'
+              }}>
+                Édition
+              </h2>
+
+              {/* Sélection du dessin */}
+              <div style={{ marginBottom: isMobile ? '20px' : '25px' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: isMobile ? '0.8rem' : '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: isMobile ? '8px' : '12px',
+                  color: '#feca57'
+                }}>
+                  🎨 Sélectionner un dessin
+                </label>
+                <select
+                  value={selectedDessinId}
+                  onChange={handleDessinSelect}
+                  style={{
+                    width: '100%',
+                    padding: isMobile ? '12px 14px' : '15px 18px',
+                    fontSize: isMobile ? '16px' : '1.1rem', // 16px minimum pour éviter le zoom iOS
+                    fontFamily: "'Crimson Text', Georgia, serif",
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    border: '2px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '10px',
+                    color: '#f0e6d3',
+                    outline: 'none',
+                    cursor: 'pointer',
+                    boxSizing: 'border-box',
+                    appearance: 'none',
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f0e6d3' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 15px center'
+                  }}
+                >
+                  <option value="">-- Choisir un dessin --</option>
+                  {DESSINS_DATA.map(dessin => (
+                    <option key={dessin.id} value={dessin.id} style={{ background: '#1a1a2e', color: '#f0e6d3' }}>
+                      {dessin.nom}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Case à cocher Miroir horizontal */}
+              <div style={{ marginBottom: isMobile ? '20px' : '25px' }}>
+                <label style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  color: '#f0e6d3',
+                  padding: isMobile ? '8px 0' : '0' // Zone tactile plus grande sur mobile
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={mirrorHorizontal}
+                    onChange={(e) => setMirrorHorizontal(e.target.checked)}
+                    style={{
+                      width: isMobile ? '24px' : '20px',
+                      height: isMobile ? '24px' : '20px',
+                      marginRight: '12px',
+                      cursor: 'pointer',
+                      accentColor: '#e94560'
+                    }}
+                  />
+                  <span style={{ 
+                    fontSize: isMobile ? '0.85rem' : '0.9rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    color: '#feca57'
+                  }}>
+                    🔄 Miroir horizontal
+                  </span>
+                </label>
+              </div>
+
+              {/* Titre */}
+              <div style={{ marginBottom: isMobile ? '20px' : '25px' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: isMobile ? '0.8rem' : '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: isMobile ? '8px' : '12px',
+                  color: '#feca57'
+                }}>
+                  ✏️ Titre de l'anecdote
+                </label>
+                <input
+                  type="text"
+                  value={titre}
+                  onChange={(e) => setTitre(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: isMobile ? '12px 14px' : '15px 18px',
+                    fontSize: isMobile ? '16px' : '1.1rem', // 16px minimum pour éviter le zoom iOS
+                    fontFamily: "'Crimson Text', Georgia, serif",
+                    fontStyle: 'italic',
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    border: '2px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '10px',
+                    color: '#f0e6d3',
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'rgba(233, 69, 96, 0.6)'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+                />
+              </div>
+
+              {/* Dialogue */}
+              <div style={{ marginBottom: isMobile ? '20px' : '30px' }}>
+                <label style={{
+                  display: 'block',
+                  fontSize: isMobile ? '0.8rem' : '0.9rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.1em',
+                  marginBottom: isMobile ? '8px' : '12px',
+                  color: '#feca57'
+                }}>
+                  💬 Dialogue
+                </label>
+                <textarea
+                  value={dialogue}
+                  onChange={(e) => setDialogue(e.target.value)}
+                  rows={isMobile ? 4 : 5}
+                  style={{
+                    width: '100%',
+                    padding: isMobile ? '12px 14px' : '15px 18px',
+                    fontSize: isMobile ? '16px' : '1rem', // 16px minimum pour éviter le zoom iOS
+                    fontFamily: "'Arial', sans-serif",
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    background: 'rgba(0, 0, 0, 0.4)',
+                    border: '2px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '10px',
+                    color: '#f0e6d3',
+                    outline: 'none',
+                    resize: 'vertical',
+                    lineHeight: '1.5',
+                    boxSizing: 'border-box'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = 'rgba(233, 69, 96, 0.6)'}
+                  onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+                />
+              </div>
+
+              {/* Bouton d'export */}
+              <div>
+                <button
+                  onClick={exporterPNG}
+                  disabled={!dessinImage}
+                  style={{
+                    width: '100%',
+                    padding: isMobile ? '16px 20px' : '16px 24px',
+                    fontSize: isMobile ? '1rem' : '1rem',
+                    fontWeight: '600',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    background: dessinImage ? 'linear-gradient(135deg, #e94560, #ff6b6b)' : 'rgba(100, 100, 100, 0.3)',
+                    border: 'none',
+                    borderRadius: '12px',
+                    color: dessinImage ? '#ffffff' : '#666',
+                    cursor: dessinImage ? 'pointer' : 'not-allowed',
+                    boxShadow: dessinImage ? '0 4px 20px rgba(233, 69, 96, 0.4)' : 'none',
+                    transition: 'all 0.3s ease',
+                    WebkitTapHighlightColor: 'transparent' // Supprime le flash bleu sur iOS
+                  }}
+                  onMouseOver={(e) => {
+                    if (dessinImage && !isMobile) {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 6px 25px rgba(233, 69, 96, 0.5)';
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (dessinImage && !isMobile) {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 20px rgba(233, 69, 96, 0.4)';
+                    }
+                  }}
+                >
+                  📥 Exporter PNG
+                </button>
+              </div>
+            </div>
+          );
 
           return (
             <div style={{
@@ -481,19 +698,19 @@
               background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
               fontFamily: "'Crimson Text', Georgia, serif",
               color: '#f0e6d3',
-              padding: '40px 20px'
+              padding: isMobile ? '20px 12px' : '40px 20px'
             }}>
               {/* En-tête */}
               <header style={{
                 textAlign: 'center',
-                marginBottom: '50px'
+                marginBottom: isMobile ? '20px' : '50px'
               }}>
                 <h1 style={{
-                  fontSize: '3.5rem',
+                  fontSize: isMobile ? '1.8rem' : '3.5rem',
                   fontWeight: '400',
                   letterSpacing: '0.15em',
                   textTransform: 'uppercase',
-                  margin: '0 0 10px 0',
+                  margin: '0 0 8px 0',
                   background: 'linear-gradient(90deg, #e94560, #ff6b6b, #feca57)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -502,274 +719,46 @@
                   AMOUR*
                 </h1>
                 <p style={{
-                  fontSize: '1.1rem',
-                  letterSpacing: '0.3em',
+                  fontSize: isMobile ? '0.65rem' : '1.1rem',
+                  letterSpacing: isMobile ? '0.1em' : '0.3em',
                   opacity: 0.8,
                   margin: 0
                 }}>
-                  * ET CHEVEUX BLANCS — GÉNÉRATEUR DE BD
+                  {isMobile ? '* ET CHEVEUX BLANCS' : '* ET CHEVEUX BLANCS — GÉNÉRATEUR DE BD'}
                 </p>
               </header>
 
+              {/* Contenu principal */}
               <div style={{
                 maxWidth: '1400px',
                 margin: '0 auto',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '40px',
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                gap: isMobile ? '20px' : '40px',
                 alignItems: 'start'
               }}>
-                {/* Panneau de contrôle */}
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  borderRadius: '20px',
-                  padding: '35px',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)'
-                }}>
-                  <h2 style={{
-                    fontSize: '1.5rem',
-                    fontWeight: '400',
-                    marginTop: 0,
-                    marginBottom: '30px',
-                    paddingBottom: '15px',
-                    borderBottom: '2px solid rgba(233, 69, 96, 0.5)'
-                  }}>
-                    Édition
-                  </h2>
-
-                  {/* Sélection du dessin */}
-                  <div style={{ marginBottom: '25px' }}>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.9rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.1em',
-                      marginBottom: '12px',
-                      color: '#feca57'
-                    }}>
-                      🎨 Sélectionner un dessin
-                    </label>
-                    <select
-                      value={selectedDessinId}
-                      onChange={handleDessinSelect}
-                      style={{
-                        width: '100%',
-                        padding: '15px 18px',
-                        fontSize: '1.1rem',
-                        fontFamily: "'Crimson Text', Georgia, serif",
-                        background: 'rgba(0, 0, 0, 0.4)',
-                        border: '2px solid rgba(255, 255, 255, 0.15)',
-                        borderRadius: '10px',
-                        color: '#f0e6d3',
-                        outline: 'none',
-                        cursor: 'pointer',
-                        transition: 'border-color 0.3s ease',
-                        boxSizing: 'border-box',
-                        appearance: 'none',
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f0e6d3' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'right 15px center'
-                      }}
-                    >
-                      <option value="">-- Choisir un dessin --</option>
-                      {DESSINS_DATA.map(dessin => (
-                        <option key={dessin.id} value={dessin.id} style={{ background: '#1a1a2e', color: '#f0e6d3' }}>
-                          {dessin.nom}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Case à cocher Miroir horizontal */}
-                  <div style={{ marginBottom: '25px' }}>
-                    <label style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      cursor: 'pointer',
-                      fontSize: '1rem',
-                      color: '#f0e6d3'
-                    }}>
-                      <input
-                        type="checkbox"
-                        checked={mirrorHorizontal}
-                        onChange={(e) => setMirrorHorizontal(e.target.checked)}
-                        style={{
-                          width: '20px',
-                          height: '20px',
-                          marginRight: '12px',
-                          cursor: 'pointer',
-                          accentColor: '#e94560'
-                        }}
-                      />
-                      <span style={{ 
-                        fontSize: '0.9rem',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.1em',
-                        color: '#feca57'
-                      }}>
-                        🔄 Miroir horizontal (retourner le dessin)
-                      </span>
-                    </label>
-                  </div>
-
-                  {/* Titre */}
-                  <div style={{ marginBottom: '25px' }}>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.9rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.1em',
-                      marginBottom: '12px',
-                      color: '#feca57'
-                    }}>
-                      ✏️ Titre de l'anecdote
-                    </label>
-                    <input
-                      type="text"
-                      value={titre}
-                      onChange={(e) => setTitre(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '15px 18px',
-                        fontSize: '1.1rem',
-                        fontFamily: "'Crimson Text', Georgia, serif",
-                        fontStyle: 'italic',
-                        background: 'rgba(0, 0, 0, 0.4)',
-                        border: '2px solid rgba(255, 255, 255, 0.15)',
-                        borderRadius: '10px',
-                        color: '#f0e6d3',
-                        outline: 'none',
-                        transition: 'border-color 0.3s ease',
-                        boxSizing: 'border-box'
-                      }}
-                      onFocus={(e) => e.target.style.borderColor = 'rgba(233, 69, 96, 0.6)'}
-                      onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
-                    />
-                  </div>
-
-                  {/* Dialogue */}
-                  <div style={{ marginBottom: '30px' }}>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '0.9rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.1em',
-                      marginBottom: '12px',
-                      color: '#feca57'
-                    }}>
-                      💬 Dialogue
-                    </label>
-                    <textarea
-                      value={dialogue}
-                      onChange={(e) => setDialogue(e.target.value)}
-                      rows={6}
-                      style={{
-                        width: '100%',
-                        padding: '15px 18px',
-                        fontSize: '1rem',
-                        fontFamily: "'Arial', sans-serif",
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                        background: 'rgba(0, 0, 0, 0.4)',
-                        border: '2px solid rgba(255, 255, 255, 0.15)',
-                        borderRadius: '10px',
-                        color: '#f0e6d3',
-                        outline: 'none',
-                        resize: 'vertical',
-                        lineHeight: '1.5',
-                        transition: 'border-color 0.3s ease',
-                        boxSizing: 'border-box'
-                      }}
-                      onFocus={(e) => e.target.style.borderColor = 'rgba(233, 69, 96, 0.6)'}
-                      onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
-                    />
-                  </div>
-
-                  {/* Bouton d'export */}
-                  <div>
-                    <button
-                      onClick={exporterPNG}
-                      disabled={!dessinImage}
-                      style={{
-                        width: '100%',
-                        padding: '16px 24px',
-                        fontSize: '1rem',
-                        fontWeight: '600',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.1em',
-                        background: dessinImage ? 'linear-gradient(135deg, #e94560, #ff6b6b)' : 'rgba(100, 100, 100, 0.3)',
-                        border: 'none',
-                        borderRadius: '12px',
-                        color: dessinImage ? '#ffffff' : '#666',
-                        cursor: dessinImage ? 'pointer' : 'not-allowed',
-                        boxShadow: dessinImage ? '0 4px 20px rgba(233, 69, 96, 0.4)' : 'none',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseOver={(e) => {
-                        if (dessinImage) {
-                          e.target.style.transform = 'translateY(-2px)';
-                          e.target.style.boxShadow = '0 6px 25px rgba(233, 69, 96, 0.5)';
-                        }
-                      }}
-                      onMouseOut={(e) => {
-                        if (dessinImage) {
-                          e.target.style.transform = 'translateY(0)';
-                          e.target.style.boxShadow = '0 4px 20px rgba(233, 69, 96, 0.4)';
-                        }
-                      }}
-                    >
-                      📥 Exporter PNG
-                    </button>
-                  </div>
-                </div>
-
-                {/* Aperçu */}
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  borderRadius: '20px',
-                  padding: '35px',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)'
-                }}>
-                  
-                  <div style={{
-                    background: '#ffffff',
-                    borderRadius: '12px',
-                    padding: '10px',
-                    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)'
-                  }}>
-                    <canvas
-                      ref={canvasRef}
-                      style={{
-                        width: '100%',
-                        height: 'auto',
-                        display: 'block',
-                        borderRadius: '8px'
-                      }}
-                    />
-                  </div>
-
-                  {!dessinImage && (
-                    <p style={{
-                      textAlign: 'center',
-                      marginTop: '20px',
-                      opacity: 0.6,
-                      fontStyle: 'italic'
-                    }}>
-                      ↑ Sélectionnez un dessin pour voir l'aperçu
-                    </p>
-                  )}
-                </div>
+                {/* Sur mobile: Aperçu en premier, puis contrôles */}
+                {/* Sur desktop: Contrôles à gauche, Aperçu à droite */}
+                {isMobile ? (
+                  <>
+                    <div style={{ width: '100%' }}><ApercuPanel /></div>
+                    <div style={{ width: '100%' }}><ControlPanel /></div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ flex: 1 }}><ControlPanel /></div>
+                    <div style={{ flex: 1 }}><ApercuPanel /></div>
+                  </>
+                )}
               </div>
 
               {/* Footer */}
               <footer style={{
                 textAlign: 'center',
-                marginTop: '60px',
+                marginTop: isMobile ? '25px' : '60px',
                 padding: '20px',
                 opacity: 0.5,
-                fontSize: '0.9rem'
+                fontSize: isMobile ? '0.75rem' : '0.9rem'
               }}>
                 Générateur pour la série AMOUR* ET CHEVEUX BLANCS
               </footer>
