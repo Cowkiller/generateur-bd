@@ -28,10 +28,9 @@
         // CONFIGURATION - MODIFIE CETTE URL AVEC TON URL GITHUB PAGES
         // ============================================================
         const BASE_URL = 'https://Cowkiller.github.io/generateur-bd';
-        // Exemple: 'https://julien-music.github.io/generateur-bd'
         // ============================================================
 
-        // Base de données des dessins intégrée directement
+        // Base de données des dessins
         const DESSINS_DATA = [
           {
             id: '001',
@@ -109,7 +108,6 @@
     <script type="text/babel">
         const { useState, useRef, useEffect } = React;
 
-        // Composant principal
         function BDGenerator() {
           const [titre, setTitre] = useState('');
           const [dialogue, setDialogue] = useState('');
@@ -121,16 +119,14 @@
           const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
           const canvasRef = useRef(null);
 
-          // Détecter le redimensionnement de la fenêtre
+          // Détecter le redimensionnement
           useEffect(() => {
-            const handleResize = () => {
-              setIsMobile(window.innerWidth < 768);
-            };
+            const handleResize = () => setIsMobile(window.innerWidth < 768);
             window.addEventListener('resize', handleResize);
             return () => window.removeEventListener('resize', handleResize);
           }, []);
 
-          // Charger les polices personnalisées depuis GitHub
+          // Charger les polices
           useEffect(() => {
             const loadFonts = async () => {
               try {
@@ -144,14 +140,14 @@
                 
                 setFontLoaded(true);
               } catch (error) {
-                console.error('Erreur lors du chargement des polices:', error);
+                console.error('Erreur polices:', error);
                 setFontLoaded(true);
               }
             };
             loadFonts();
           }, []);
 
-          // Charger l'image du cadre au démarrage
+          // Charger le cadre
           useEffect(() => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
@@ -159,7 +155,7 @@
             img.src = `${BASE_URL}/cadre.png`;
           }, []);
 
-          // Gérer la sélection d'un dessin
+          // Sélection d'un dessin
           const handleDessinSelect = (e) => {
             const dessinId = e.target.value;
             setSelectedDessinId(dessinId);
@@ -184,7 +180,7 @@
             }
           };
 
-          // Fonction pour découper le texte en lignes
+          // Découper le texte en lignes
           const wrapText = (ctx, text, maxWidth) => {
             const words = text.split(' ');
             const lines = [];
@@ -204,7 +200,7 @@
             return lines;
           };
 
-          // Fonction pour dessiner le dessin (avec ou sans miroir)
+          // Dessiner le dessin (avec ou sans miroir)
           const drawDessin = (ctx, width, height, applyMirror) => {
             if (!dessinImage) return;
             
@@ -446,98 +442,217 @@
             }
           };
 
-          // Composant Aperçu
-          const ApercuPanel = () => (
-            <div style={{
+          // Styles responsive
+          const styles = {
+            container: {
+              minHeight: '100vh',
+              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+              fontFamily: "'Crimson Text', Georgia, serif",
+              color: '#f0e6d3',
+              padding: isMobile ? '20px 12px' : '40px 20px'
+            },
+            header: {
+              textAlign: 'center',
+              marginBottom: isMobile ? '20px' : '50px'
+            },
+            title: {
+              fontSize: isMobile ? '1.8rem' : '3.5rem',
+              fontWeight: '400',
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              margin: '0 0 8px 0',
+              background: 'linear-gradient(90deg, #e94560, #ff6b6b, #feca57)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            },
+            subtitle: {
+              fontSize: isMobile ? '0.65rem' : '1.1rem',
+              letterSpacing: isMobile ? '0.1em' : '0.3em',
+              opacity: 0.8,
+              margin: 0
+            },
+            mainGrid: {
+              maxWidth: '1400px',
+              margin: '0 auto',
+              display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
+              gap: isMobile ? '20px' : '40px',
+              alignItems: 'start'
+            },
+            panel: {
+              background: 'rgba(255, 255, 255, 0.05)',
+              borderRadius: isMobile ? '15px' : '20px',
+              padding: isMobile ? '20px' : '35px',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              width: '100%',
+              flex: isMobile ? 'none' : 1
+            },
+            apercuPanel: {
               background: 'rgba(255, 255, 255, 0.05)',
               borderRadius: isMobile ? '15px' : '20px',
               padding: isMobile ? '15px' : '35px',
               backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)'
-            }}>
-              <div style={{
-                background: '#ffffff',
-                borderRadius: isMobile ? '8px' : '12px',
-                padding: isMobile ? '5px' : '10px',
-                boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)'
-              }}>
-                <canvas
-                  ref={canvasRef}
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    display: 'block',
-                    borderRadius: isMobile ? '6px' : '8px'
-                  }}
-                />
-              </div>
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              width: '100%',
+              flex: isMobile ? 'none' : 1
+            },
+            sectionTitle: {
+              fontSize: isMobile ? '1.2rem' : '1.5rem',
+              fontWeight: '400',
+              marginTop: 0,
+              marginBottom: isMobile ? '20px' : '30px',
+              paddingBottom: '15px',
+              borderBottom: '2px solid rgba(233, 69, 96, 0.5)'
+            },
+            label: {
+              display: 'block',
+              fontSize: isMobile ? '0.8rem' : '0.9rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              marginBottom: isMobile ? '8px' : '12px',
+              color: '#feca57'
+            },
+            select: {
+              width: '100%',
+              padding: isMobile ? '12px 14px' : '15px 18px',
+              fontSize: '16px',
+              fontFamily: "'Crimson Text', Georgia, serif",
+              background: 'rgba(0, 0, 0, 0.4)',
+              border: '2px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '10px',
+              color: '#f0e6d3',
+              outline: 'none',
+              cursor: 'pointer',
+              boxSizing: 'border-box',
+              appearance: 'none',
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f0e6d3' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 15px center'
+            },
+            input: {
+              width: '100%',
+              padding: isMobile ? '12px 14px' : '15px 18px',
+              fontSize: '16px',
+              fontFamily: "'Crimson Text', Georgia, serif",
+              fontStyle: 'italic',
+              background: 'rgba(0, 0, 0, 0.4)',
+              border: '2px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '10px',
+              color: '#f0e6d3',
+              outline: 'none',
+              boxSizing: 'border-box'
+            },
+            textarea: {
+              width: '100%',
+              padding: isMobile ? '12px 14px' : '15px 18px',
+              fontSize: '16px',
+              fontFamily: "'Arial', sans-serif",
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              background: 'rgba(0, 0, 0, 0.4)',
+              border: '2px solid rgba(255, 255, 255, 0.15)',
+              borderRadius: '10px',
+              color: '#f0e6d3',
+              outline: 'none',
+              resize: 'vertical',
+              lineHeight: '1.5',
+              boxSizing: 'border-box'
+            },
+            checkboxLabel: {
+              display: 'flex',
+              alignItems: 'center',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              color: '#f0e6d3',
+              padding: isMobile ? '8px 0' : '0'
+            },
+            checkbox: {
+              width: isMobile ? '24px' : '20px',
+              height: isMobile ? '24px' : '20px',
+              marginRight: '12px',
+              cursor: 'pointer',
+              accentColor: '#e94560'
+            },
+            checkboxText: {
+              fontSize: isMobile ? '0.85rem' : '0.9rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: '#feca57'
+            },
+            button: {
+              width: '100%',
+              padding: isMobile ? '16px 20px' : '16px 24px',
+              fontSize: '1rem',
+              fontWeight: '600',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              background: dessinImage ? 'linear-gradient(135deg, #e94560, #ff6b6b)' : 'rgba(100, 100, 100, 0.3)',
+              border: 'none',
+              borderRadius: '12px',
+              color: dessinImage ? '#ffffff' : '#666',
+              cursor: dessinImage ? 'pointer' : 'not-allowed',
+              boxShadow: dessinImage ? '0 4px 20px rgba(233, 69, 96, 0.4)' : 'none',
+              transition: 'all 0.3s ease',
+              WebkitTapHighlightColor: 'transparent'
+            },
+            canvasContainer: {
+              background: '#ffffff',
+              borderRadius: isMobile ? '8px' : '12px',
+              padding: isMobile ? '5px' : '10px',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)'
+            },
+            canvas: {
+              width: '100%',
+              height: 'auto',
+              display: 'block',
+              borderRadius: isMobile ? '6px' : '8px'
+            },
+            placeholder: {
+              textAlign: 'center',
+              marginTop: isMobile ? '15px' : '20px',
+              opacity: 0.6,
+              fontStyle: 'italic',
+              fontSize: isMobile ? '0.9rem' : '1rem'
+            },
+            footer: {
+              textAlign: 'center',
+              marginTop: isMobile ? '25px' : '60px',
+              padding: '20px',
+              opacity: 0.5,
+              fontSize: isMobile ? '0.75rem' : '0.9rem'
+            },
+            fieldGroup: {
+              marginBottom: isMobile ? '20px' : '25px'
+            }
+          };
 
+          // Panneau Aperçu (en premier sur mobile)
+          const apercuContent = (
+            <div style={styles.apercuPanel}>
+              <div style={styles.canvasContainer}>
+                <canvas ref={canvasRef} style={styles.canvas} />
+              </div>
               {!dessinImage && (
-                <p style={{
-                  textAlign: 'center',
-                  marginTop: isMobile ? '15px' : '20px',
-                  opacity: 0.6,
-                  fontStyle: 'italic',
-                  fontSize: isMobile ? '0.9rem' : '1rem'
-                }}>
+                <p style={styles.placeholder}>
                   {isMobile ? '👇 Choisissez un dessin ci-dessous' : '↑ Sélectionnez un dessin pour voir l\'aperçu'}
                 </p>
               )}
             </div>
           );
 
-          // Composant Panneau de contrôle
-          const ControlPanel = () => (
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              borderRadius: isMobile ? '15px' : '20px',
-              padding: isMobile ? '20px' : '35px',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)'
-            }}>
-              <h2 style={{
-                fontSize: isMobile ? '1.2rem' : '1.5rem',
-                fontWeight: '400',
-                marginTop: 0,
-                marginBottom: isMobile ? '20px' : '30px',
-                paddingBottom: '15px',
-                borderBottom: '2px solid rgba(233, 69, 96, 0.5)'
-              }}>
-                Édition
-              </h2>
+          // Panneau Contrôles
+          const controlContent = (
+            <div style={styles.panel}>
+              <h2 style={styles.sectionTitle}>Édition</h2>
 
               {/* Sélection du dessin */}
-              <div style={{ marginBottom: isMobile ? '20px' : '25px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: isMobile ? '0.8rem' : '0.9rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: isMobile ? '8px' : '12px',
-                  color: '#feca57'
-                }}>
-                  🎨 Sélectionner un dessin
-                </label>
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>🎨 Sélectionner un dessin</label>
                 <select
                   value={selectedDessinId}
                   onChange={handleDessinSelect}
-                  style={{
-                    width: '100%',
-                    padding: isMobile ? '12px 14px' : '15px 18px',
-                    fontSize: isMobile ? '16px' : '1.1rem', // 16px minimum pour éviter le zoom iOS
-                    fontFamily: "'Crimson Text', Georgia, serif",
-                    background: 'rgba(0, 0, 0, 0.4)',
-                    border: '2px solid rgba(255, 255, 255, 0.15)',
-                    borderRadius: '10px',
-                    color: '#f0e6d3',
-                    outline: 'none',
-                    cursor: 'pointer',
-                    boxSizing: 'border-box',
-                    appearance: 'none',
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f0e6d3' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'right 15px center'
-                  }}
+                  style={styles.select}
                 >
                   <option value="">-- Choisir un dessin --</option>
                   {DESSINS_DATA.map(dessin => (
@@ -548,143 +663,47 @@
                 </select>
               </div>
 
-              {/* Case à cocher Miroir horizontal */}
-              <div style={{ marginBottom: isMobile ? '20px' : '25px' }}>
-                <label style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  fontSize: '1rem',
-                  color: '#f0e6d3',
-                  padding: isMobile ? '8px 0' : '0' // Zone tactile plus grande sur mobile
-                }}>
+              {/* Miroir horizontal */}
+              <div style={styles.fieldGroup}>
+                <label style={styles.checkboxLabel}>
                   <input
                     type="checkbox"
                     checked={mirrorHorizontal}
                     onChange={(e) => setMirrorHorizontal(e.target.checked)}
-                    style={{
-                      width: isMobile ? '24px' : '20px',
-                      height: isMobile ? '24px' : '20px',
-                      marginRight: '12px',
-                      cursor: 'pointer',
-                      accentColor: '#e94560'
-                    }}
+                    style={styles.checkbox}
                   />
-                  <span style={{ 
-                    fontSize: isMobile ? '0.85rem' : '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    color: '#feca57'
-                  }}>
-                    🔄 Miroir horizontal
-                  </span>
+                  <span style={styles.checkboxText}>🔄 Miroir horizontal</span>
                 </label>
               </div>
 
               {/* Titre */}
-              <div style={{ marginBottom: isMobile ? '20px' : '25px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: isMobile ? '0.8rem' : '0.9rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: isMobile ? '8px' : '12px',
-                  color: '#feca57'
-                }}>
-                  ✏️ Titre de l'anecdote
-                </label>
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>✏️ Titre de l'anecdote</label>
                 <input
                   type="text"
                   value={titre}
                   onChange={(e) => setTitre(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: isMobile ? '12px 14px' : '15px 18px',
-                    fontSize: isMobile ? '16px' : '1.1rem', // 16px minimum pour éviter le zoom iOS
-                    fontFamily: "'Crimson Text', Georgia, serif",
-                    fontStyle: 'italic',
-                    background: 'rgba(0, 0, 0, 0.4)',
-                    border: '2px solid rgba(255, 255, 255, 0.15)',
-                    borderRadius: '10px',
-                    color: '#f0e6d3',
-                    outline: 'none',
-                    boxSizing: 'border-box'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = 'rgba(233, 69, 96, 0.6)'}
-                  onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+                  style={styles.input}
                 />
               </div>
 
               {/* Dialogue */}
-              <div style={{ marginBottom: isMobile ? '20px' : '30px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: isMobile ? '0.8rem' : '0.9rem',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.1em',
-                  marginBottom: isMobile ? '8px' : '12px',
-                  color: '#feca57'
-                }}>
-                  💬 Dialogue
-                </label>
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>💬 Dialogue</label>
                 <textarea
                   value={dialogue}
                   onChange={(e) => setDialogue(e.target.value)}
                   rows={isMobile ? 4 : 5}
-                  style={{
-                    width: '100%',
-                    padding: isMobile ? '12px 14px' : '15px 18px',
-                    fontSize: isMobile ? '16px' : '1rem', // 16px minimum pour éviter le zoom iOS
-                    fontFamily: "'Arial', sans-serif",
-                    fontWeight: 'bold',
-                    textTransform: 'uppercase',
-                    background: 'rgba(0, 0, 0, 0.4)',
-                    border: '2px solid rgba(255, 255, 255, 0.15)',
-                    borderRadius: '10px',
-                    color: '#f0e6d3',
-                    outline: 'none',
-                    resize: 'vertical',
-                    lineHeight: '1.5',
-                    boxSizing: 'border-box'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = 'rgba(233, 69, 96, 0.6)'}
-                  onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+                  style={styles.textarea}
                 />
               </div>
 
-              {/* Bouton d'export */}
+              {/* Bouton export */}
               <div>
                 <button
                   onClick={exporterPNG}
                   disabled={!dessinImage}
-                  style={{
-                    width: '100%',
-                    padding: isMobile ? '16px 20px' : '16px 24px',
-                    fontSize: isMobile ? '1rem' : '1rem',
-                    fontWeight: '600',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    background: dessinImage ? 'linear-gradient(135deg, #e94560, #ff6b6b)' : 'rgba(100, 100, 100, 0.3)',
-                    border: 'none',
-                    borderRadius: '12px',
-                    color: dessinImage ? '#ffffff' : '#666',
-                    cursor: dessinImage ? 'pointer' : 'not-allowed',
-                    boxShadow: dessinImage ? '0 4px 20px rgba(233, 69, 96, 0.4)' : 'none',
-                    transition: 'all 0.3s ease',
-                    WebkitTapHighlightColor: 'transparent' // Supprime le flash bleu sur iOS
-                  }}
-                  onMouseOver={(e) => {
-                    if (dessinImage && !isMobile) {
-                      e.target.style.transform = 'translateY(-2px)';
-                      e.target.style.boxShadow = '0 6px 25px rgba(233, 69, 96, 0.5)';
-                    }
-                  }}
-                  onMouseOut={(e) => {
-                    if (dessinImage && !isMobile) {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 4px 20px rgba(233, 69, 96, 0.4)';
-                    }
-                  }}
+                  style={styles.button}
                 >
                   📥 Exporter PNG
                 </button>
@@ -693,80 +712,38 @@
           );
 
           return (
-            <div style={{
-              minHeight: '100vh',
-              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-              fontFamily: "'Crimson Text', Georgia, serif",
-              color: '#f0e6d3',
-              padding: isMobile ? '20px 12px' : '40px 20px'
-            }}>
+            <div style={styles.container}>
               {/* En-tête */}
-              <header style={{
-                textAlign: 'center',
-                marginBottom: isMobile ? '20px' : '50px'
-              }}>
-                <h1 style={{
-                  fontSize: isMobile ? '1.8rem' : '3.5rem',
-                  fontWeight: '400',
-                  letterSpacing: '0.15em',
-                  textTransform: 'uppercase',
-                  margin: '0 0 8px 0',
-                  background: 'linear-gradient(90deg, #e94560, #ff6b6b, #feca57)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  textShadow: 'none'
-                }}>
-                  AMOUR*
-                </h1>
-                <p style={{
-                  fontSize: isMobile ? '0.65rem' : '1.1rem',
-                  letterSpacing: isMobile ? '0.1em' : '0.3em',
-                  opacity: 0.8,
-                  margin: 0
-                }}>
+              <header style={styles.header}>
+                <h1 style={styles.title}>AMOUR*</h1>
+                <p style={styles.subtitle}>
                   {isMobile ? '* ET CHEVEUX BLANCS' : '* ET CHEVEUX BLANCS — GÉNÉRATEUR DE BD'}
                 </p>
               </header>
 
               {/* Contenu principal */}
-              <div style={{
-                maxWidth: '1400px',
-                margin: '0 auto',
-                display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                gap: isMobile ? '20px' : '40px',
-                alignItems: 'start'
-              }}>
-                {/* Sur mobile: Aperçu en premier, puis contrôles */}
-                {/* Sur desktop: Contrôles à gauche, Aperçu à droite */}
+              <div style={styles.mainGrid}>
                 {isMobile ? (
                   <>
-                    <div style={{ width: '100%' }}><ApercuPanel /></div>
-                    <div style={{ width: '100%' }}><ControlPanel /></div>
+                    {apercuContent}
+                    {controlContent}
                   </>
                 ) : (
                   <>
-                    <div style={{ flex: 1 }}><ControlPanel /></div>
-                    <div style={{ flex: 1 }}><ApercuPanel /></div>
+                    {controlContent}
+                    {apercuContent}
                   </>
                 )}
               </div>
 
               {/* Footer */}
-              <footer style={{
-                textAlign: 'center',
-                marginTop: isMobile ? '25px' : '60px',
-                padding: '20px',
-                opacity: 0.5,
-                fontSize: isMobile ? '0.75rem' : '0.9rem'
-              }}>
+              <footer style={styles.footer}>
                 Générateur pour la série AMOUR* ET CHEVEUX BLANCS
               </footer>
             </div>
           );
         }
 
-        // Rendre l'application
         ReactDOM.render(<BDGenerator />, document.getElementById('root'));
     </script>
 </body>
