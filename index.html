@@ -117,6 +117,7 @@
           const [cadreImage, setCadreImage] = useState(null);
           const [selectedDessinId, setSelectedDessinId] = useState('');
           const [fontLoaded, setFontLoaded] = useState(false);
+          const [mirrorHorizontal, setMirrorHorizontal] = useState(false);
           const canvasRef = useRef(null);
 
           // Charger les polices personnalisées depuis GitHub
@@ -204,6 +205,42 @@
             return lines;
           };
 
+          // Fonction pour dessiner le dessin (avec ou sans miroir)
+          const drawDessin = (ctx, width, height, applyMirror) => {
+            if (!dessinImage) return;
+            
+            const imgRatio = dessinImage.width / dessinImage.height;
+            const boxRatio = width / height;
+            
+            let finalWidth, finalHeight, finalX, finalY;
+            
+            if (imgRatio > boxRatio) {
+              finalWidth = width;
+              finalHeight = width / imgRatio;
+              finalX = 0;
+              finalY = (height - finalHeight) / 2;
+            } else {
+              finalHeight = height;
+              finalWidth = height * imgRatio;
+              finalX = (width - finalWidth) / 2;
+              finalY = 0;
+            }
+            
+            if (applyMirror) {
+              // Sauvegarder l'état du contexte
+              ctx.save();
+              // Déplacer l'origine au centre, inverser horizontalement, puis redéplacer
+              ctx.translate(width, 0);
+              ctx.scale(-1, 1);
+              // Dessiner l'image (les coordonnées sont maintenant inversées)
+              ctx.drawImage(dessinImage, width - finalX - finalWidth, finalY, finalWidth, finalHeight);
+              // Restaurer l'état du contexte
+              ctx.restore();
+            } else {
+              ctx.drawImage(dessinImage, finalX, finalY, finalWidth, finalHeight);
+            }
+          };
+
           // Dessiner l'aperçu
           useEffect(() => {
             if (!fontLoaded) return;
@@ -222,35 +259,10 @@
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(0, 0, width, height);
             
-            // Dessiner l'image du dessin
-            if (dessinImage) {
-              const drawX = 0;
-              const drawY = 0;
-              const drawWidth = width;
-              const drawHeight = height;
-              
-              // Calculer les proportions pour garder le ratio
-              const imgRatio = dessinImage.width / dessinImage.height;
-              const boxRatio = drawWidth / drawHeight;
-              
-              let finalWidth, finalHeight, finalX, finalY;
-              
-              if (imgRatio > boxRatio) {
-                finalWidth = drawWidth;
-                finalHeight = drawWidth / imgRatio;
-                finalX = drawX;
-                finalY = drawY + (drawHeight - finalHeight) / 2;
-              } else {
-                finalHeight = drawHeight;
-                finalWidth = drawHeight * imgRatio;
-                finalX = drawX + (drawWidth - finalWidth) / 2;
-                finalY = drawY;
-              }
-              
-              ctx.drawImage(dessinImage, finalX, finalY, finalWidth, finalHeight);
-            }
+            // Dessiner l'image du dessin (avec miroir si activé)
+            drawDessin(ctx, width, height, mirrorHorizontal);
             
-            // Dessiner le cadre si disponible
+            // Dessiner le cadre si disponible (PAS de miroir sur le cadre)
             if (cadreImage) {
               ctx.drawImage(cadreImage, 0, 0, width, height);
             }
@@ -321,7 +333,7 @@
             ctx.textAlign = 'right';
             ctx.fillText('TRCK', width - 30, height - 20);
             
-          }, [dessinImage, cadreImage, titre, dialogue, fontLoaded]);
+          }, [dessinImage, cadreImage, titre, dialogue, fontLoaded, mirrorHorizontal]);
 
           // Exporter en PNG
           const exporterPNG = () => {
@@ -345,7 +357,7 @@
               exportCtx.fillStyle = '#ffffff';
               exportCtx.fillRect(0, 0, width, height);
               
-              // Redessiner l'image du dessin
+              // Redessiner l'image du dessin (avec miroir si activé)
               if (dessinImage) {
                 const imgRatio = dessinImage.width / dessinImage.height;
                 const boxRatio = width / height;
@@ -364,10 +376,18 @@
                   finalY = 0;
                 }
                 
-                exportCtx.drawImage(dessinImage, finalX, finalY, finalWidth, finalHeight);
+                if (mirrorHorizontal) {
+                  exportCtx.save();
+                  exportCtx.translate(width, 0);
+                  exportCtx.scale(-1, 1);
+                  exportCtx.drawImage(dessinImage, width - finalX - finalWidth, finalY, finalWidth, finalHeight);
+                  exportCtx.restore();
+                } else {
+                  exportCtx.drawImage(dessinImage, finalX, finalY, finalWidth, finalHeight);
+                }
               }
               
-              // Redessiner le cadre
+              // Redessiner le cadre (PAS de miroir)
               if (cadreImage) {
                 exportCtx.drawImage(cadreImage, 0, 0, width, height);
               }
@@ -559,6 +579,38 @@
                         </option>
                       ))}
                     </select>
+                  </div>
+
+                  {/* Case à cocher Miroir horizontal */}
+                  <div style={{ marginBottom: '25px' }}>
+                    <label style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                      fontSize: '1rem',
+                      color: '#f0e6d3'
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={mirrorHorizontal}
+                        onChange={(e) => setMirrorHorizontal(e.target.checked)}
+                        style={{
+                          width: '20px',
+                          height: '20px',
+                          marginRight: '12px',
+                          cursor: 'pointer',
+                          accentColor: '#e94560'
+                        }}
+                      />
+                      <span style={{ 
+                        fontSize: '0.9rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        color: '#feca57'
+                      }}>
+                        🔄 Miroir horizontal (retourner le dessin)
+                      </span>
+                    </label>
                   </div>
 
                   {/* Titre */}
