@@ -119,6 +119,21 @@
           const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
           const canvasRef = useRef(null);
 
+          // Palette sombre AMOUR*
+          const colors = {
+            rose: '#E8728A',              // Rose principal (accent)
+            roseClair: '#F5A3B5',         // Rose clair pour hover/accents secondaires
+            fondPrincipal: '#1a1a2e',     // Bleu très foncé
+            fondSecondaire: '#16213e',    // Bleu foncé
+            fondTertiaire: '#0f3460',     // Bleu nuit
+            panneauFond: 'rgba(255, 255, 255, 0.05)',  // Fond semi-transparent
+            bordure: 'rgba(232, 114, 138, 0.3)',      // Bordure rose subtile
+            texte: '#f0e6d3',             // Texte crème
+            texteClair: '#ffffff',        // Texte blanc
+            inputFond: 'rgba(0, 0, 0, 0.3)',  // Fond des inputs
+            inputBordure: 'rgba(232, 114, 138, 0.4)'  // Bordure des inputs
+          };
+
           // Détecter le redimensionnement
           useEffect(() => {
             const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -442,34 +457,40 @@
             }
           };
 
-          // Styles responsive
+          // Styles responsive - Thème sombre AMOUR*
           const styles = {
             container: {
               minHeight: '100vh',
-              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+              background: `linear-gradient(135deg, ${colors.fondPrincipal} 0%, ${colors.fondSecondaire} 50%, ${colors.fondTertiaire} 100%)`,
               fontFamily: "'Crimson Text', Georgia, serif",
-              color: '#f0e6d3',
-              padding: isMobile ? '20px 12px' : '40px 20px'
+              color: colors.texte,
+              padding: 0
             },
-            header: {
+            headerBanner: {
+              width: '100%',
+              background: colors.fondPrincipal,
+              padding: isMobile ? '15px 0 10px' : '25px 0 15px',
               textAlign: 'center',
-              marginBottom: isMobile ? '20px' : '50px'
+              borderBottom: `1px solid ${colors.bordure}`
             },
-            title: {
-              fontSize: isMobile ? '1.8rem' : '3.5rem',
-              fontWeight: '400',
+            bannerImage: {
+              maxWidth: isMobile ? '90%' : '600px',
+              height: 'auto',
+              display: 'block',
+              margin: '0 auto'
+            },
+            subtitleBar: {
+              background: colors.rose,
+              color: colors.texteClair,
+              padding: isMobile ? '8px 15px' : '12px 20px',
+              textAlign: 'center',
+              fontSize: isMobile ? '0.75rem' : '1rem',
               letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              margin: '0 0 8px 0',
-              background: 'linear-gradient(90deg, #e94560, #ff6b6b, #feca57)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
+              fontWeight: '600',
+              textTransform: 'uppercase'
             },
-            subtitle: {
-              fontSize: isMobile ? '0.65rem' : '1.1rem',
-              letterSpacing: isMobile ? '0.1em' : '0.3em',
-              opacity: 0.8,
-              margin: 0
+            mainContent: {
+              padding: isMobile ? '20px 15px' : '40px 30px'
             },
             mainGrid: {
               maxWidth: '1400px',
@@ -480,30 +501,40 @@
               alignItems: 'start'
             },
             panel: {
-              background: 'rgba(255, 255, 255, 0.05)',
+              background: colors.panneauFond,
               borderRadius: isMobile ? '15px' : '20px',
               padding: isMobile ? '20px' : '35px',
               backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              border: `1px solid ${colors.bordure}`,
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
               width: '100%',
               flex: isMobile ? 'none' : 1
             },
             apercuPanel: {
-              background: 'rgba(255, 255, 255, 0.05)',
+              background: colors.panneauFond,
               borderRadius: isMobile ? '15px' : '20px',
               padding: isMobile ? '15px' : '35px',
               backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              border: `1px solid ${colors.bordure}`,
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
               width: '100%',
               flex: isMobile ? 'none' : 1
             },
             sectionTitle: {
               fontSize: isMobile ? '1.2rem' : '1.5rem',
-              fontWeight: '400',
+              fontWeight: '600',
               marginTop: 0,
               marginBottom: isMobile ? '20px' : '30px',
               paddingBottom: '15px',
-              borderBottom: '2px solid rgba(233, 69, 96, 0.5)'
+              borderBottom: `2px solid ${colors.rose}`,
+              color: colors.rose,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px'
+            },
+            logoSmall: {
+              width: isMobile ? '32px' : '40px',
+              height: isMobile ? '32px' : '40px'
             },
             label: {
               display: 'block',
@@ -511,24 +542,26 @@
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
               marginBottom: isMobile ? '8px' : '12px',
-              color: '#feca57'
+              color: colors.roseClair,
+              fontWeight: '600'
             },
             select: {
               width: '100%',
               padding: isMobile ? '12px 14px' : '15px 18px',
               fontSize: '16px',
               fontFamily: "'Crimson Text', Georgia, serif",
-              background: 'rgba(0, 0, 0, 0.4)',
-              border: '2px solid rgba(255, 255, 255, 0.15)',
+              background: colors.inputFond,
+              border: `2px solid ${colors.inputBordure}`,
               borderRadius: '10px',
-              color: '#f0e6d3',
+              color: colors.texte,
               outline: 'none',
               cursor: 'pointer',
               boxSizing: 'border-box',
               appearance: 'none',
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23f0e6d3' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23E8728A' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'right 15px center'
+              backgroundPosition: 'right 15px center',
+              transition: 'border-color 0.3s ease'
             },
             input: {
               width: '100%',
@@ -536,12 +569,13 @@
               fontSize: '16px',
               fontFamily: "'Crimson Text', Georgia, serif",
               fontStyle: 'italic',
-              background: 'rgba(0, 0, 0, 0.4)',
-              border: '2px solid rgba(255, 255, 255, 0.15)',
+              background: colors.inputFond,
+              border: `2px solid ${colors.inputBordure}`,
               borderRadius: '10px',
-              color: '#f0e6d3',
+              color: colors.texte,
               outline: 'none',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              transition: 'border-color 0.3s ease'
             },
             textarea: {
               width: '100%',
@@ -550,21 +584,22 @@
               fontFamily: "'Arial', sans-serif",
               fontWeight: 'bold',
               textTransform: 'uppercase',
-              background: 'rgba(0, 0, 0, 0.4)',
-              border: '2px solid rgba(255, 255, 255, 0.15)',
+              background: colors.inputFond,
+              border: `2px solid ${colors.inputBordure}`,
               borderRadius: '10px',
-              color: '#f0e6d3',
+              color: colors.texte,
               outline: 'none',
               resize: 'vertical',
               lineHeight: '1.5',
-              boxSizing: 'border-box'
+              boxSizing: 'border-box',
+              transition: 'border-color 0.3s ease'
             },
             checkboxLabel: {
               display: 'flex',
               alignItems: 'center',
               cursor: 'pointer',
               fontSize: '1rem',
-              color: '#f0e6d3',
+              color: colors.texte,
               padding: isMobile ? '8px 0' : '0'
             },
             checkbox: {
@@ -572,13 +607,14 @@
               height: isMobile ? '24px' : '20px',
               marginRight: '12px',
               cursor: 'pointer',
-              accentColor: '#e94560'
+              accentColor: colors.rose
             },
             checkboxText: {
               fontSize: isMobile ? '0.85rem' : '0.9rem',
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
-              color: '#feca57'
+              color: colors.roseClair,
+              fontWeight: '600'
             },
             button: {
               width: '100%',
@@ -587,20 +623,20 @@
               fontWeight: '600',
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
-              background: dessinImage ? 'linear-gradient(135deg, #e94560, #ff6b6b)' : 'rgba(100, 100, 100, 0.3)',
+              background: dessinImage ? `linear-gradient(135deg, ${colors.rose}, ${colors.roseClair})` : 'rgba(100, 100, 100, 0.3)',
               border: 'none',
               borderRadius: '12px',
-              color: dessinImage ? '#ffffff' : '#666',
+              color: dessinImage ? colors.texteClair : '#666',
               cursor: dessinImage ? 'pointer' : 'not-allowed',
-              boxShadow: dessinImage ? '0 4px 20px rgba(233, 69, 96, 0.4)' : 'none',
+              boxShadow: dessinImage ? '0 4px 20px rgba(232, 114, 138, 0.4)' : 'none',
               transition: 'all 0.3s ease',
               WebkitTapHighlightColor: 'transparent'
             },
             canvasContainer: {
-              background: '#ffffff',
+              background: colors.texteClair,
               borderRadius: isMobile ? '8px' : '12px',
               padding: isMobile ? '5px' : '10px',
-              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)'
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)'
             },
             canvas: {
               width: '100%',
@@ -611,16 +647,24 @@
             placeholder: {
               textAlign: 'center',
               marginTop: isMobile ? '15px' : '20px',
-              opacity: 0.6,
+              opacity: 0.7,
               fontStyle: 'italic',
-              fontSize: isMobile ? '0.9rem' : '1rem'
+              fontSize: isMobile ? '0.9rem' : '1rem',
+              color: colors.roseClair
             },
             footer: {
               textAlign: 'center',
-              marginTop: isMobile ? '25px' : '60px',
-              padding: '20px',
-              opacity: 0.5,
-              fontSize: isMobile ? '0.75rem' : '0.9rem'
+              marginTop: isMobile ? '25px' : '40px',
+              padding: '30px 20px',
+              background: `linear-gradient(180deg, transparent 0%, rgba(232, 114, 138, 0.15) 100%)`,
+              borderTop: `1px solid ${colors.bordure}`,
+              color: colors.texte,
+              fontSize: isMobile ? '0.8rem' : '0.95rem'
+            },
+            footerLogo: {
+              width: '50px',
+              height: '50px',
+              marginBottom: '10px'
             },
             fieldGroup: {
               marginBottom: isMobile ? '20px' : '25px'
@@ -630,12 +674,16 @@
           // Panneau Aperçu (en premier sur mobile)
           const apercuContent = (
             <div style={styles.apercuPanel}>
+              <h2 style={styles.sectionTitle}>
+                <img src="Love_Logo_Rose__Blanc_et_Trans_Rond.png" alt="" style={styles.logoSmall} />
+                Aperçu
+              </h2>
               <div style={styles.canvasContainer}>
                 <canvas ref={canvasRef} style={styles.canvas} />
               </div>
               {!dessinImage && (
                 <p style={styles.placeholder}>
-                  {isMobile ? '👇 Choisissez un dessin ci-dessous' : '↑ Sélectionnez un dessin pour voir l\'aperçu'}
+                  {isMobile ? '👇 Choisissez un dessin ci-dessous' : '← Sélectionnez un dessin pour voir l\'aperçu'}
                 </p>
               )}
             </div>
@@ -644,7 +692,10 @@
           // Panneau Contrôles
           const controlContent = (
             <div style={styles.panel}>
-              <h2 style={styles.sectionTitle}>Édition</h2>
+              <h2 style={styles.sectionTitle}>
+                <img src="Love_Logo_Rose__Blanc_et_Trans_Rond.png" alt="" style={styles.logoSmall} />
+                Édition
+              </h2>
 
               {/* Sélection du dessin */}
               <div style={styles.fieldGroup}>
@@ -656,7 +707,7 @@
                 >
                   <option value="">-- Choisir un dessin --</option>
                   {DESSINS_DATA.map(dessin => (
-                    <option key={dessin.id} value={dessin.id} style={{ background: '#1a1a2e', color: '#f0e6d3' }}>
+                    <option key={dessin.id} value={dessin.id} style={{ background: colors.fondPrincipal, color: colors.texte }}>
                       {dessin.nom}
                     </option>
                   ))}
@@ -713,32 +764,48 @@
 
           return (
             <div style={styles.container}>
-              {/* En-tête */}
-              <header style={styles.header}>
-                <h1 style={styles.title}>AMOUR*</h1>
-                <p style={styles.subtitle}>
-                  {isMobile ? '* ET CHEVEUX BLANCS' : '* ET CHEVEUX BLANCS — GÉNÉRATEUR DE BD'}
-                </p>
+              {/* En-tête avec bannière */}
+              <header style={styles.headerBanner}>
+                <img 
+                  src="Amour_Titre_ET_colo_kofi.png" 
+                  alt="AMOUR* ET CHEVEUX BLANCS" 
+                  style={styles.bannerImage}
+                />
               </header>
+              
+              {/* Barre sous-titre 
+              <div style={styles.subtitleBar}>
+                Générateur de BD
+              </div>*/}
 
               {/* Contenu principal */}
-              <div style={styles.mainGrid}>
-                {isMobile ? (
-                  <>
-                    {apercuContent}
-                    {controlContent}
-                  </>
-                ) : (
-                  <>
-                    {controlContent}
-                    {apercuContent}
-                  </>
-                )}
+              <div style={styles.mainContent}>
+                <div style={styles.mainGrid}>
+                  {isMobile ? (
+                    <>
+                      {apercuContent}
+                      {controlContent}
+                    </>
+                  ) : (
+                    <>
+                      {controlContent}
+                      {apercuContent}
+                    </>
+                  )}
+                </div>
               </div>
 
               {/* Footer */}
               <footer style={styles.footer}>
-                Générateur pour la série AMOUR* ET CHEVEUX BLANCS
+                <img 
+                  src="Love_Logo_Rose__Blanc_et_Trans_Rond.png" 
+                  alt="" 
+                  style={styles.footerLogo}
+                />
+                <div style={{ color: colors.rose, fontWeight: '600', fontSize: '1.1rem' }}>AMOUR* ET CHEVEUX BLANCS</div>
+                <div style={{ opacity: 0.8, marginTop: '8px', fontSize: '0.9rem' }}>
+                  Une BD sur le joyeux chaos de la parentalité
+                </div>
               </footer>
             </div>
           );
