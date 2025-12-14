@@ -270,39 +270,68 @@
               ctx.drawImage(cadreImage, 0, 0, width, height);
             }
             
-            // Titre
-            ctx.fillStyle = '#000000';
+            // Titre avec rectangle blanc
             ctx.font = '34px Fragmentcore, Georgia, serif';
             ctx.textAlign = 'center';
             
             const maxTitreWidth = 400;
             const titreMetrics = ctx.measureText(titre);
+            const padding = 8; // Marge autour du texte
+            const titreCenterX = 735;
             
-            if (titreMetrics.width > maxTitreWidth) {
-                const words = titre.split(' ');
-                let ligne1 = '';
-                let ligne2 = '';
-                
-                for (let i = 0; i < words.length; i++) {
-                    const testLine = ligne1 + (ligne1 ? ' ' : '') + words[i];
-                    if (ctx.measureText(testLine).width <= maxTitreWidth) {
-                        ligne1 = testLine;
-                    } else {
-                        ligne2 = words.slice(i).join(' ');
-                        break;
-                    }
-                }
-                
-                if (!ligne2 && ligne1 === titre) {
-                    const mid = Math.ceil(words.length / 2);
-                    ligne1 = words.slice(0, mid).join(' ');
-                    ligne2 = words.slice(mid).join(' ');
-                }
-                
-                ctx.fillText(ligne1, 735, 43);
-                ctx.fillText(ligne2, 735, 75);
-            } else {
-                ctx.fillText(titre, 735, 58);
+            if (titre.trim()) {
+              if (titreMetrics.width > maxTitreWidth) {
+                  const words = titre.split(' ');
+                  let ligne1 = '';
+                  let ligne2 = '';
+                  
+                  for (let i = 0; i < words.length; i++) {
+                      const testLine = ligne1 + (ligne1 ? ' ' : '') + words[i];
+                      if (ctx.measureText(testLine).width <= maxTitreWidth) {
+                          ligne1 = testLine;
+                      } else {
+                          ligne2 = words.slice(i).join(' ');
+                          break;
+                      }
+                  }
+                  
+                  if (!ligne2 && ligne1 === titre) {
+                      const mid = Math.ceil(words.length / 2);
+                      ligne1 = words.slice(0, mid).join(' ');
+                      ligne2 = words.slice(mid).join(' ');
+                  }
+                  
+                  // Calculer la largeur du rectangle (max des 2 lignes)
+                  const ligne1Width = ctx.measureText(ligne1).width;
+                  const ligne2Width = ctx.measureText(ligne2).width;
+                  const rectWidth = Math.max(ligne1Width, ligne2Width) + padding * 2;
+                  const rectHeight = 34 * 2 + padding * 2; // 2 lignes de 34px + padding
+                  const rectX = titreCenterX - rectWidth / 2;
+                  const rectY = 43 - 34 + padding / 2 - padding; // Ajusté pour la première ligne
+                  
+                  // Dessiner le rectangle blanc
+                  ctx.fillStyle = '#ffffff';
+                  ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+                  
+                  // Dessiner le texte
+                  ctx.fillStyle = '#000000';
+                  ctx.fillText(ligne1, titreCenterX, 43);
+                  ctx.fillText(ligne2, titreCenterX, 75);
+              } else {
+                  // Une seule ligne
+                  const rectWidth = titreMetrics.width + padding * 2;
+                  const rectHeight = 34 + padding * 2;
+                  const rectX = titreCenterX - rectWidth / 2;
+                  const rectY = 58 - 34 + padding / 2 - padding;
+                  
+                  // Dessiner le rectangle blanc
+                  ctx.fillStyle = '#ffffff';
+                  ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+                  
+                  // Dessiner le texte
+                  ctx.fillStyle = '#000000';
+                  ctx.fillText(titre, titreCenterX, 58);
+              }
             }
 
             // Dialogue
@@ -381,39 +410,68 @@
                 exportCtx.drawImage(cadreImage, 0, 0, width, height);
               }
               
-              // Titre
-              exportCtx.fillStyle = '#000000';
+              // Titre avec rectangle blanc
               exportCtx.font = '34px Fragmentcore, Georgia, serif';
               exportCtx.textAlign = 'center';
               
               const maxTitreWidth = 400;
               const titreMetrics = exportCtx.measureText(titre);
+              const padding = 8; // Marge autour du texte
+              const titreCenterX = 735;
               
-              if (titreMetrics.width > maxTitreWidth) {
-                const words = titre.split(' ');
-                let ligne1 = '';
-                let ligne2 = '';
-                
-                for (let i = 0; i < words.length; i++) {
-                  const testLine = ligne1 + (ligne1 ? ' ' : '') + words[i];
-                  if (exportCtx.measureText(testLine).width <= maxTitreWidth) {
-                    ligne1 = testLine;
-                  } else {
-                    ligne2 = words.slice(i).join(' ');
-                    break;
+              if (titre.trim()) {
+                if (titreMetrics.width > maxTitreWidth) {
+                  const words = titre.split(' ');
+                  let ligne1 = '';
+                  let ligne2 = '';
+                  
+                  for (let i = 0; i < words.length; i++) {
+                    const testLine = ligne1 + (ligne1 ? ' ' : '') + words[i];
+                    if (exportCtx.measureText(testLine).width <= maxTitreWidth) {
+                      ligne1 = testLine;
+                    } else {
+                      ligne2 = words.slice(i).join(' ');
+                      break;
+                    }
                   }
+                  
+                  if (!ligne2 && ligne1 === titre) {
+                    const mid = Math.ceil(words.length / 2);
+                    ligne1 = words.slice(0, mid).join(' ');
+                    ligne2 = words.slice(mid).join(' ');
+                  }
+                  
+                  // Calculer la largeur du rectangle (max des 2 lignes)
+                  const ligne1Width = exportCtx.measureText(ligne1).width;
+                  const ligne2Width = exportCtx.measureText(ligne2).width;
+                  const rectWidth = Math.max(ligne1Width, ligne2Width) + padding * 2;
+                  const rectHeight = 34 * 2 + padding * 2; // 2 lignes de 34px + padding
+                  const rectX = titreCenterX - rectWidth / 2;
+                  const rectY = 43 - 34 + padding / 2 - padding; // Ajusté pour la première ligne
+                  
+                  // Dessiner le rectangle blanc
+                  exportCtx.fillStyle = '#ffffff';
+                  exportCtx.fillRect(rectX, rectY, rectWidth, rectHeight);
+                  
+                  // Dessiner le texte
+                  exportCtx.fillStyle = '#000000';
+                  exportCtx.fillText(ligne1, titreCenterX, 43);
+                  exportCtx.fillText(ligne2, titreCenterX, 75);
+                } else {
+                  // Une seule ligne
+                  const rectWidth = titreMetrics.width + padding * 2;
+                  const rectHeight = 34 + padding * 2;
+                  const rectX = titreCenterX - rectWidth / 2;
+                  const rectY = 58 - 34 + padding / 2 - padding;
+                  
+                  // Dessiner le rectangle blanc
+                  exportCtx.fillStyle = '#ffffff';
+                  exportCtx.fillRect(rectX, rectY, rectWidth, rectHeight);
+                  
+                  // Dessiner le texte
+                  exportCtx.fillStyle = '#000000';
+                  exportCtx.fillText(titre, titreCenterX, 58);
                 }
-                
-                if (!ligne2 && ligne1 === titre) {
-                  const mid = Math.ceil(words.length / 2);
-                  ligne1 = words.slice(0, mid).join(' ');
-                  ligne2 = words.slice(mid).join(' ');
-                }
-                
-                exportCtx.fillText(ligne1, 735, 43);
-                exportCtx.fillText(ligne2, 735, 75);
-              } else {
-                exportCtx.fillText(titre, 735, 58);
               }
               
               // Dialogue
