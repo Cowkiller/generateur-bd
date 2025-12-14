@@ -8,6 +8,7 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -111,6 +112,7 @@
         function BDGenerator() {
           const [titre, setTitre] = useState('');
           const [dialogue, setDialogue] = useState('');
+          const [signatureUser, setSignatureUser] = useState('');
           const [dessinImage, setDessinImage] = useState(null);
           const [cadreImage, setCadreImage] = useState(null);
           const [selectedDessinId, setSelectedDessinId] = useState('');
@@ -353,12 +355,17 @@
               ctx.fillText(line, 30, dialogueY + i * lineHeight);
             });
             
-            /*// Signature
-            ctx.font = 'bold 24px Arial, sans-serif';
-            ctx.textAlign = 'right';
-            ctx.fillText('TRCK', width - 30, height - 20);*/
+            // Signature utilisateur (à gauche de la signature TRCK intégrée au cadre)
+            if (signatureUser.trim()) {
+              ctx.font = '24px Dancing Script, cursive';
+              ctx.textAlign = 'right';
+              ctx.fillStyle = '#000000';
+              // Position à gauche de "TRCK" : environ 90px de marge pour "et TRCK"
+              const signatureText = signatureUser.trim() + ' et';
+              ctx.fillText(signatureText, width - 95, height - 20);
+            }
             
-          }, [dessinImage, cadreImage, titre, dialogue, fontLoaded, mirrorHorizontal]);
+          }, [dessinImage, cadreImage, titre, dialogue, signatureUser, fontLoaded, mirrorHorizontal]);
 
           // Exporter en PNG
           const exporterPNG = () => {
@@ -493,9 +500,15 @@
                 exportCtx.fillText(line, 30, dialogueY + i * lineHeight);
               });
               
-              exportCtx.font = 'bold 24px Arial, sans-serif';
-              exportCtx.textAlign = 'right';
-              exportCtx.fillText('TRCK', width - 30, height - 20);
+              // Signature utilisateur (à gauche de la signature TRCK intégrée au cadre)
+              if (signatureUser.trim()) {
+                exportCtx.font = '24px Dancing Script, cursive';
+                exportCtx.textAlign = 'right';
+                exportCtx.fillStyle = '#000000';
+                // Position à gauche de "TRCK" : environ 90px de marge pour "et TRCK"
+                const signatureText = signatureUser.trim() + ' et';
+                exportCtx.fillText(signatureText, width - 95, height - 20);
+              }
               
               exportCanvas.toBlob((blob) => {
                 if (!blob) return;
@@ -805,6 +818,21 @@
                   rows={isMobile ? 4 : 5}
                   style={styles.textarea}
                 />
+              </div>
+
+              {/* Signature */}
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>🖊️ Votre signature (optionnel)</label>
+                <input
+                  type="text"
+                  value={signatureUser}
+                  onChange={(e) => setSignatureUser(e.target.value)}
+                  placeholder="Ex: Marie"
+                  style={{...styles.input, fontFamily: "'Dancing Script', cursive", fontStyle: 'normal', fontSize: '18px'}}
+                />
+                <div style={{fontSize: '0.75rem', marginTop: '6px', opacity: 0.7, color: colors.roseClair}}>
+                  {signatureUser.trim() ? `Aperçu : "${signatureUser} et TRCK"` : 'Sans signature : "TRCK"'}
+                </div>
               </div>
 
               {/* Bouton export */}
