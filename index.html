@@ -357,12 +357,12 @@
             
             // Signature utilisateur (à gauche de la signature TRCK intégrée au cadre)
             if (signatureUser.trim()) {
-              ctx.font = '24px Dancing Script, cursive';
+              ctx.font = '32px Dancing Script, cursive';
               ctx.textAlign = 'right';
               ctx.fillStyle = '#000000';
               // Position à gauche de "TRCK" : environ 90px de marge pour "et TRCK"
               const signatureText = signatureUser.trim() + ' et';
-              ctx.fillText(signatureText, width - 95, height - 20);
+              ctx.fillText(signatureText, width - 115, height - 11);
             }
             
           }, [dessinImage, cadreImage, titre, dialogue, signatureUser, fontLoaded, mirrorHorizontal]);
@@ -502,12 +502,12 @@
               
               // Signature utilisateur (à gauche de la signature TRCK intégrée au cadre)
               if (signatureUser.trim()) {
-                exportCtx.font = '24px Dancing Script, cursive';
+                exportCtx.font = '32px Dancing Script, cursive';
                 exportCtx.textAlign = 'right';
                 exportCtx.fillStyle = '#000000';
                 // Position à gauche de "TRCK" : environ 90px de marge pour "et TRCK"
                 const signatureText = signatureUser.trim() + ' et';
-                exportCtx.fillText(signatureText, width - 95, height - 20);
+                exportCtx.fillText(signatureText, width - 115, height - 11);
               }
               
               exportCanvas.toBlob((blob) => {
