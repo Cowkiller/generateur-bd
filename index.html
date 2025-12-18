@@ -275,7 +275,7 @@
             }
             
             // Titre avec rectangle blanc
-            ctx.font = '34px Fragmentcore, Georgia, serif';
+            ctx.font = '38px Fragmentcore, Georgia, serif';
             ctx.textAlign = 'center';
             
             const maxTitreWidth = 400;
@@ -309,9 +309,9 @@
                   const ligne1Width = ctx.measureText(ligne1).width;
                   const ligne2Width = ctx.measureText(ligne2).width;
                   const rectWidth = Math.max(ligne1Width, ligne2Width) + padding * 2;
-                  const rectHeight = 34 * 2 + padding * 2; // 2 lignes de 34px + padding
+                  const rectHeight = 38 * 2 + padding * 2; // 2 lignes de 38px + padding
                   const rectX = titreCenterX - rectWidth / 2;
-                  const rectY = 43 - 34 + padding / 2 - padding; // Ajusté pour la première ligne
+                  const rectY = 47 - 38 + padding / 2 - padding; // Ajusté pour la première ligne
                   
                   // Dessiner le rectangle blanc
                   ctx.fillStyle = '#ffffff';
@@ -319,14 +319,14 @@
                   
                   // Dessiner le texte
                   ctx.fillStyle = '#000000';
-                  ctx.fillText(ligne1, titreCenterX, 43);
-                  ctx.fillText(ligne2, titreCenterX, 75);
+                  ctx.fillText(ligne1, titreCenterX, 47);
+                  ctx.fillText(ligne2, titreCenterX, 84);
               } else {
                   // Une seule ligne
                   const rectWidth = titreMetrics.width + padding * 2;
-                  const rectHeight = 34 + padding * 2;
+                  const rectHeight = 38 + padding * 2;
                   const rectX = titreCenterX - rectWidth / 2;
-                  const rectY = 58 - 34 + padding / 2 - padding;
+                  const rectY = 58 - 38 + padding / 2 - padding;
                   
                   // Dessiner le rectangle blanc
                   ctx.fillStyle = '#ffffff';
@@ -420,7 +420,7 @@
               }
               
               // Titre avec rectangle blanc
-              exportCtx.font = '34px Fragmentcore, Georgia, serif';
+              exportCtx.font = '38px Fragmentcore, Georgia, serif';
               exportCtx.textAlign = 'center';
               
               const maxTitreWidth = 400;
@@ -454,9 +454,9 @@
                   const ligne1Width = exportCtx.measureText(ligne1).width;
                   const ligne2Width = exportCtx.measureText(ligne2).width;
                   const rectWidth = Math.max(ligne1Width, ligne2Width) + padding * 2;
-                  const rectHeight = 34 * 2 + padding * 2; // 2 lignes de 34px + padding
+                  const rectHeight = 38 * 2 + padding * 2; // 2 lignes de 38px + padding
                   const rectX = titreCenterX - rectWidth / 2;
-                  const rectY = 43 - 34 + padding / 2 - padding; // Ajusté pour la première ligne
+                  const rectY = 47 - 38 + padding / 2 - padding; // Ajusté pour la première ligne
                   
                   // Dessiner le rectangle blanc
                   exportCtx.fillStyle = '#ffffff';
@@ -464,14 +464,14 @@
                   
                   // Dessiner le texte
                   exportCtx.fillStyle = '#000000';
-                  exportCtx.fillText(ligne1, titreCenterX, 43);
-                  exportCtx.fillText(ligne2, titreCenterX, 75);
+                  exportCtx.fillText(ligne1, titreCenterX, 47);
+                  exportCtx.fillText(ligne2, titreCenterX, 84);
                 } else {
                   // Une seule ligne
                   const rectWidth = titreMetrics.width + padding * 2;
-                  const rectHeight = 34 + padding * 2;
+                  const rectHeight = 38 + padding * 2;
                   const rectX = titreCenterX - rectWidth / 2;
-                  const rectY = 58 - 34 + padding / 2 - padding;
+                  const rectY = 58 - 38 + padding / 2 - padding;
                   
                   // Dessiner le rectangle blanc
                   exportCtx.fillStyle = '#ffffff';
@@ -863,7 +863,7 @@
               
               {/* Barre sous-titre 
               <div style={styles.subtitleBar}>
-                Générateur de BD
+                Le générateur
               </div>*/}
 
               {/* Contenu principal */}
