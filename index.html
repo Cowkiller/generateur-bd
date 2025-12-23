@@ -33,126 +33,177 @@
         const BASE_URL = 'https://Cowkiller.github.io/generateur-bd';
         // ============================================================
 
-        // Base de données des dessins
+        // Base de données des dessins (bilingue)
         const DESSINS_DATA = [
           {
             id: '001',
-            nom: '001 - Le test de grossesse',
+            nom: { fr: '001 - Le test de grossesse', en: '001 - The pregnancy test' },
             fichier: '001-Test_de_grossesse.png',
-            titre: 'Le test de grossesse',
-            dialogue: '- JE PARTAGE TON ENTHOUSIASME CHÉRI, MAIS TU DEVRAIS PAS EMBRASSER LE TEST DE GROSSESSE COMME ÇA!'
+            titre: { fr: 'Le test de grossesse', en: 'the pregnancy test' },
+            dialogue: { 
+              fr: '- JE PARTAGE TON ENTHOUSIASME CHÉRI, MAIS TU DEVRAIS PAS EMBRASSER LE TEST DE GROSSESSE COMME ÇA!',
+              en: '- I SHARE YOUR ENTHUSIASM HONEY, BUT YOU SHOULDN\'T KISS THE PREGNANCY TEST LIKE THAT!'
+            }
           },
           {
             id: '002a',
-            nom: '002a - L\'échographie (a)',
+            nom: { fr: '002a - L\'échographie (a)', en: '002a - The ultrasound (a)' },
             fichier: '002-Echographie-1v1.png',
-            titre: 'l\'Echographie a',
-            dialogue: '- "PAS DE PRÉFÉRENCE" MON CUL !'
+            titre: { fr: 'l\'Echographie a', en: 'the ultrasound a' },
+            dialogue: { 
+              fr: '- "PAS DE PRÉFÉRENCE" MON CUL !',
+              en: '- "NO PREFERENCE" MY ASS!'
+            }
           },
           {
             id: '002b',
-            nom: '002b - L\'échographie (b)',
+            nom: { fr: '002b - L\'échographie (b)', en: '002b - The ultrasound (b)' },
             fichier: '002-Echographie-1v2.png',
-            titre: 'l\'Echographie b',
-            dialogue: '- FÉLICITATIONS, C\'EST UN GARÇON\n- ENCORE!?!'
+            titre: { fr: 'l\'Echographie b', en: 'the ultrasound b' },
+            dialogue: { 
+              fr: '- FÉLICITATIONS, C\'EST UN GARÇON\n- ENCORE!?!',
+              en: '- CONGRATULATIONS, IT\'S A BOY\n- AGAIN!?!'
+            }
           },
           {
             id: '002c',
-            nom: '002c - L\'échographie (c)',
+            nom: { fr: '002c - L\'échographie (c)', en: '002c - The ultrasound (c)' },
             fichier: '002-Echographie-2v1.png',
-            titre: 'l\'Echographie c',
-            dialogue: '- FÉLICITATIONS, C\'EST UNE FILLE.\n- HAHAH! DANS TON CUL!'
+            titre: { fr: 'l\'Echographie c', en: 'the ultrasound c' },
+            dialogue: { 
+              fr: '- FÉLICITATIONS, C\'EST UNE FILLE.\n- HAHAH! DANS TON CUL!',
+              en: '- CONGRATULATIONS, IT\'S A GIRL.\n- HAHAH! IN YOUR FACE!'
+            }
           },
           {
             id: '002d',
-            nom: '002d - L\'échographie (d)',
+            nom: { fr: '002d - L\'échographie (d)', en: '002d - The ultrasound (d)' },
             fichier: '002-Echographie-3v1.png',
-            titre: 'l\'Echographie d',
-            dialogue: '- FÉLICITATIONS, CE SONT DES TRIPLÉS.'
+            titre: { fr: 'l\'Echographie d', en: 'the ultrasound d' },
+            dialogue: { 
+              fr: '- FÉLICITATIONS, CE SONT DES TRIPLÉS.',
+              en: '- CONGRATULATIONS, THEY\'RE TRIPLETS.'
+            }
           },
           {
             id: '002e',
-            nom: '002e - L\'échographie (e)',
+            nom: { fr: '002e - L\'échographie (e)', en: '002e - The ultrasound (e)' },
             fichier: '002-Echographie-4v1.png',
-            titre: 'l\'Echographie e',
-            dialogue: '- FÉLICITATIONS, C\'EST UNE BOÎTE DE CASSOULET.'
+            titre: { fr: 'l\'Echographie e', en: 'the ultrasound e' },
+            dialogue: { 
+              fr: '- FÉLICITATIONS, C\'EST UNE BOÎTE DE CASSOULET.',
+              en: '- CONGRATULATIONS, IT\'S A CAN OF BAKED BEANS.'
+            }
           },
           {
             id: '003',
-            nom: '003 - La reprise',
+            nom: { fr: '003 - La reprise', en: '003 - Back to work' },
             fichier: '003-La_reprise.png',
-            titre: 'La reprise',
-            dialogue: '- DIS-DONC, IL A L\'AIR FATIGUÉ DUFLANTIER!\n- IL REVIENT JUSTE DE CONGÉS PATERNITÉ.\n- OH! C\'EST POUR ÇA QU\'IL NOUS APPELAIT TOUS "MON P\'TIT CHAT"!'
+            titre: { fr: 'La reprise', en: 'back to work' },
+            dialogue: { 
+              fr: '- DIS-DONC, IL A L\'AIR FATIGUÉ DUFLANTIER!\n- IL REVIENT JUSTE DE CONGÉS PATERNITÉ.\n- OH! C\'EST POUR ÇA QU\'IL NOUS APPELAIT TOUS "MON P\'TIT CHAT"!',
+              en: '- WOW, DUFLANTIER LOOKS EXHAUSTED!\n- HE JUST CAME BACK FROM PATERNITY LEAVE.\n- OH! THAT\'S WHY HE KEPT CALLING US ALL "SWEETIE PIE"!'
+            }
           },
           {
             id: '004',
-            nom: '004 - Les dessins',
+            nom: { fr: '004 - Les dessins', en: '004 - The drawings' },
             fichier: '004-Les_dessins.png',
-            titre: 'les dessins',
-            dialogue: '- C\'EST PAS QU\'ON VEUILLE BRIDER TA PASSION ARTISTIQUE, MAIS ON N\'EST PEUT-ÊTRE PAS OBLIGÉ DE TOUS LES AFFICHER?\n- ON N\'EN PEUT PLUS DE TES DESSINS POURRIS TIMOTHY!!!'
+            titre: { fr: 'les dessins', en: 'the drawings' },
+            dialogue: { 
+              fr: '- C\'EST PAS QU\'ON VEUILLE BRIDER TA PASSION ARTISTIQUE, MAIS ON N\'EST PEUT-ÊTRE PAS OBLIGÉ DE TOUS LES AFFICHER?\n- ON N\'EN PEUT PLUS DE TES DESSINS POURRIS TIMOTHY!!!',
+              en: '- IT\'S NOT THAT WE WANT TO CRUSH YOUR ARTISTIC PASSION, BUT MAYBE WE DON\'T HAVE TO DISPLAY ALL OF THEM?\n- WE CAN\'T STAND YOUR CRAPPY DRAWINGS ANYMORE TIMOTHY!!!'
+            }
           },
           {
             id: '005',
-            nom: '005 - La nausée',
+            nom: { fr: '005 - La nausée', en: '005 - The nausea' },
             fichier: '005-La_nausee.png',
-            titre: 'la nausée',
-            dialogue: '- TEQUILA SUNRISE ?\n- 8 SEMAINES D\'AMÉNORRHÉE.\n- HOULA! DUR!'
+            titre: { fr: 'la nausée', en: 'the nausea' },
+            dialogue: { 
+              fr: '- TEQUILA SUNRISE ?\n- 8 SEMAINES D\'AMÉNORRHÉE.\n- HOULA! DUR!',
+              en: '- TEQUILA SUNRISE?\n- 8 WEEKS PREGNANT.\n- OUCH! ROUGH!'
+            }
           },
           {
             id: '006',
-            nom: '006 - Le prénom',
+            nom: { fr: '006 - Le prénom', en: '006 - The name' },
             fichier: '006-Le_prenom.png',
-            titre: 'le prénom',
-            dialogue: '- 3 PRÉNOMS SUR UN POST-IT, J\'APPELLE PAS ÇA UNE LISTE PATRICK !\n- ET TU PEUX ME DIRE POURQUOI JE NE TROUVE PAS "GANDALF" DANS TA LISTE POURTANT TRÈS LONGUE, SUSANNE ?!?'
+            titre: { fr: 'le prénom', en: 'the name' },
+            dialogue: { 
+              fr: '- 3 PRÉNOMS SUR UN POST-IT, J\'APPELLE PAS ÇA UNE LISTE PATRICK !\n- ET TU PEUX ME DIRE POURQUOI JE NE TROUVE PAS "GANDALF" DANS TA LISTE POURTANT TRÈS LONGUE, SUSANNE ?!?',
+              en: '- 3 NAMES ON A POST-IT, I WOULDN\'T CALL THAT A LIST PATRICK!\n- AND CAN YOU TELL ME WHY I CAN\'T FIND "GANDALF" IN YOUR SUPPOSEDLY VERY LONG LIST, SUSAN?!?'
+            }
           },
           {
             id: '008',
-            nom: '008 - L\'album photos',
+            nom: { fr: '008 - L\'album photos', en: '008 - The photo album' },
             fichier: '008-Album_photo.png',
-            titre: 'l\'album photos',
-            dialogue: '- DIS DONC IL A L\'AIR HEUREUX LE PAPA À LA NAISSANCE DU PETIT...PAR CONTRE, LE GRAND-PÈRE FAIT LA GUEULE!\n- AH NON, ÇA C\'EST TOUJOURS LE PAPA... 1 MOIS APRÈS.'
+            titre: { fr: 'l\'album photos', en: 'the photo album' },
+            dialogue: { 
+              fr: '- DIS DONC IL A L\'AIR HEUREUX LE PAPA À LA NAISSANCE DU PETIT...PAR CONTRE, LE GRAND-PÈRE FAIT LA GUEULE!\n- AH NON, ÇA C\'EST TOUJOURS LE PAPA... 1 MOIS APRÈS.',
+              en: '- WOW THE DAD LOOKS SO HAPPY AT THE BABY\'S BIRTH... BUT THE GRANDPA LOOKS GRUMPY!\n- NO, THAT\'S STILL THE DAD... 1 MONTH LATER.'
+            }
           },
           {
             id: '009',
-            nom: '009 - La purée',
+            nom: { fr: '009 - La purée', en: '009 - The mashed food' },
             fichier: '009-La_puree.png',
-            titre: 'la purée',
-            dialogue: '- ... À TES SOUHAITS.'
+            titre: { fr: 'la purée', en: 'the mashed food' },
+            dialogue: { 
+              fr: '- ... À TES SOUHAITS.',
+              en: '- ... BLESS YOU.'
+            }
           },
           {
             id: '010',
-            nom: '010 - Les hormones',
+            nom: { fr: '010 - Les hormones', en: '010 - The hormones' },
             fichier: '010-Les_hormones.png',
-            titre: 'les hormones',
-            dialogue: '- C\'EST TELLEMENT ÉMOUVANT!\n- MAIS OUI, MAIS OUI... LÀÀÀÀ CHUT...'
+            titre: { fr: 'les hormones', en: 'the hormones' },
+            dialogue: { 
+              fr: '- C\'EST TELLEMENT ÉMOUVANT!\n- MAIS OUI, MAIS OUI... LÀÀÀÀ CHUT...',
+              en: '- IT\'S SO MOVING!\n- YES, YES... THERE THERE SHHH...'
+            }
           },
           {
             id: '012',
-            nom: '012 - Le faire-part',
+            nom: { fr: '012 - Le faire-part', en: '012 - The birth announcement' },
             fichier: '012-le_faire-part.png',
-            titre: 'le faire-part',
-            dialogue: '- NON THOMAS, ON NE PEUT PAS DIRE QU\'ON REGRETTE SUR UN FAIRE-PART DE NAISSANCE !!!\n- MAIS ON SE DOIT DE PRÉVENIR LES FUTURS-PARENTS NON??\n...\nOU ALORS ON LE MET EN TOUT PETIT?'
+            titre: { fr: 'le faire-part', en: 'the birth announcement' },
+            dialogue: { 
+              fr: '- NON THOMAS, ON NE PEUT PAS DIRE QU\'ON REGRETTE SUR UN FAIRE-PART DE NAISSANCE !!!\n- MAIS ON SE DOIT DE PRÉVENIR LES FUTURS-PARENTS NON??\n...\nOU ALORS ON LE MET EN TOUT PETIT?',
+              en: '- NO THOMAS, WE CAN\'T SAY WE REGRET IT ON A BIRTH ANNOUNCEMENT!!!\n- BUT WE SHOULD WARN FUTURE PARENTS RIGHT??\n...\nOR MAYBE WE WRITE IT REALLY SMALL?'
+            }
           },
           {
             id: '024',
-            nom: '024 - Le guet-apens',
+            nom: { fr: '024 - Le guet-apens', en: '024 - The ambush' },
             fichier: '024-le_guet-apens.png',
-            titre: 'le guet-apens',
-            dialogue: '- PRÉSIDENT ! PRÉSIDENT ! PRÉSIDENT !\n- JE SAIS BIEN QUE JE DEVAIS JUSTE OBSERVER CHÉRIE... JE NE COMPRENDS PAS CE QU\'IL S\'EST PASSÉ !'
+            titre: { fr: 'le guet-apens', en: 'the ambush' },
+            dialogue: { 
+              fr: '- PRÉSIDENT ! PRÉSIDENT ! PRÉSIDENT !\n- JE SAIS BIEN QUE JE DEVAIS JUSTE OBSERVER CHÉRIE... JE NE COMPRENDS PAS CE QU\'IL S\'EST PASSÉ !',
+              en: '- MVP! MVP! MVP!\n- I KNOW I WAS JUST SUPPOSED TO WATCH HONEY... I DON\'T UNDERSTAND WHAT HAPPENED!'
+            }
           },
           {
             id: '041',
-            nom: '041 - La fierté',
+            nom: { fr: '041 - La fierté', en: '041 - The pride' },
             fichier: '041-La_fierte.png',
-            titre: 'la fierté',
-            dialogue: '- C\'EST TRÈS BIEN MON CHÉRI, MAMAN EST CONTENTE QUE TU SOIS ALLÉ FAIRE PIPI TOUT SEUL! MAIS ÇA PERD UN PEU DE SON INTÉRÊT SI TU ME RÉVEILLES POUR ME LE DIRE...'
+            titre: { fr: 'la fierté', en: 'the pride' },
+            dialogue: { 
+              fr: '- C\'EST TRÈS BIEN MON CHÉRI, MAMAN EST CONTENTE QUE TU SOIS ALLÉ FAIRE PIPI TOUT SEUL! MAIS ÇA PERD UN PEU DE SON INTÉRÊT SI TU ME RÉVEILLES POUR ME LE DIRE...',
+              en: '- THAT\'S GREAT SWEETIE, MOMMY IS HAPPY YOU WENT PEE ALL BY YOURSELF! BUT IT LOSES SOME OF ITS APPEAL IF YOU WAKE ME UP TO TELL ME...'
+            }
           },
           {
             id: '042',
-            nom: '042 - La négociation',
+            nom: { fr: '042 - La négociation', en: '042 - The negotiation' },
             fichier: '042-La_negociation.png',
-            titre: 'la négociation',
-            dialogue: '- ALLEZ MON LOULOU, JE M\'EXCUSE D\'AVOIR TIRÉ LA CHASSE À TA PLACE... ET SI ON DIT QUE LA PROCHAINE FOIS QUE JE FAIS CACA, C\'EST TOI QUI FAIS, ÇA VA MIEUX ?'
+            titre: { fr: 'la négociation', en: 'the negotiation' },
+            dialogue: { 
+              fr: '- ALLEZ MON LOULOU, JE M\'EXCUSE D\'AVOIR TIRÉ LA CHASSE À TA PLACE... ET SI ON DIT QUE LA PROCHAINE FOIS QUE JE FAIS CACA, C\'EST TOI QUI FAIS, ÇA VA MIEUX ?',
+              en: '- COME ON SWEETIE, I\'M SORRY I FLUSHED FOR YOU... WHAT IF WE SAY NEXT TIME I POOP, YOU GET TO FLUSH, DOES THAT MAKE IT BETTER?'
+            }
           }
         ];
     </script>
@@ -160,7 +211,58 @@
     <script type="text/babel">
         const { useState, useRef, useEffect } = React;
 
+        // Traductions
+        const translations = {
+          fr: {
+            pageTitle: 'Amour* et cheveux blancs - le générateur',
+            bannerImage: 'Amour_Titre_ET_colo_kofi.png',
+            bannerAlt: 'AMOUR* ET CHEVEUX BLANCS',
+            preview: 'Aperçu',
+            edition: 'Édition',
+            selectDrawing: '🎨 Sélectionner un dessin',
+            selectPlaceholder: '-- Choisir un dessin --',
+            horizontalMirror: '🔄 Miroir horizontal',
+            anecdoteTitle: '✏️ Titre de l\'anecdote',
+            dialogue: '💬 Dialogue',
+            signature: '🖊️ Votre signature (optionnel)',
+            signaturePlaceholder: 'Ex: Marie',
+            signaturePreviewWith: (name) => `Aperçu : "${name} et TRCK"`,
+            signaturePreviewWithout: 'Sans signature : "TRCK"',
+            exportPNG: '📥 Exporter PNG',
+            footerTitle: 'AMOUR* ET CHEVEUX BLANCS',
+            footerSubtitle: 'Une BD sur le joyeux chaos de la parentalité',
+            placeholderMobile: '👇 Choisissez un dessin ci-dessous',
+            placeholderDesktop: '← Sélectionnez un dessin pour voir l\'aperçu',
+            language: '🌐 Langue',
+            cadreImage: 'cadre.png'
+          },
+          en: {
+            pageTitle: 'Love* & Grey Hair - the generator',
+            bannerImage: 'Love_Title_trans.png',
+            bannerAlt: 'LOVE* & GREY HAIR',
+            preview: 'Preview',
+            edition: 'Edit',
+            selectDrawing: '🎨 Select a drawing',
+            selectPlaceholder: '-- Choose a drawing --',
+            horizontalMirror: '🔄 Horizontal mirror',
+            anecdoteTitle: '✏️ Anecdote title',
+            dialogue: '💬 Dialogue',
+            signature: '🖊️ Your signature (optional)',
+            signaturePlaceholder: 'Ex: Mary',
+            signaturePreviewWith: (name) => `Preview: "${name} & TRCK"`,
+            signaturePreviewWithout: 'Without signature: "TRCK"',
+            exportPNG: '📥 Export PNG',
+            footerTitle: 'LOVE* & GREY HAIR',
+            footerSubtitle: 'A comic about the joyful chaos of parenthood',
+            placeholderMobile: '👇 Choose a drawing below',
+            placeholderDesktop: '← Select a drawing to see the preview',
+            language: '🌐 Language',
+            cadreImage: 'cadre_eng.png'
+          }
+        };
+
         function BDGenerator() {
+          const [langue, setLangue] = useState('fr');
           const [titre, setTitre] = useState('');
           const [dialogue, setDialogue] = useState('');
           const [signatureUser, setSignatureUser] = useState('');
@@ -171,6 +273,14 @@
           const [mirrorHorizontal, setMirrorHorizontal] = useState(false);
           const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
           const canvasRef = useRef(null);
+
+          // Raccourci pour les traductions
+          const t = translations[langue];
+
+          // Mettre à jour le titre de la page quand la langue change
+          useEffect(() => {
+            document.title = t.pageTitle;
+          }, [langue]);
 
           // Palette sombre AMOUR*
           const colors = {
@@ -215,13 +325,13 @@
             loadFonts();
           }, []);
 
-          // Charger le cadre
+          // Charger le cadre (dépend de la langue)
           useEffect(() => {
             const img = new Image();
             img.crossOrigin = 'anonymous';
             img.onload = () => setCadreImage(img);
-            img.src = `${BASE_URL}/cadre.png`;
-          }, []);
+            img.src = `${BASE_URL}/${t.cadreImage}`;
+          }, [langue]);
 
           // Sélection d'un dessin
           const handleDessinSelect = (e) => {
@@ -237,8 +347,8 @@
             
             const dessin = DESSINS_DATA.find(d => d.id === dessinId);
             if (dessin) {
-              setTitre(dessin.titre);
-              setDialogue(dessin.dialogue);
+              setTitre(dessin.titre[langue]);
+              setDialogue(dessin.dialogue[langue]);
               
               const img = new Image();
               img.crossOrigin = 'anonymous';
@@ -247,6 +357,17 @@
               img.src = `${BASE_URL}/img/${dessin.fichier}`;
             }
           };
+
+          // Mettre à jour titre/dialogue quand la langue change (si un dessin est sélectionné)
+          useEffect(() => {
+            if (selectedDessinId) {
+              const dessin = DESSINS_DATA.find(d => d.id === selectedDessinId);
+              if (dessin) {
+                setTitre(dessin.titre[langue]);
+                setDialogue(dessin.dialogue[langue]);
+              }
+            }
+          }, [langue]);
 
           // Découper le texte en lignes
           const wrapText = (ctx, text, maxWidth) => {
@@ -798,14 +919,14 @@
             <div style={styles.apercuPanel}>
               <h2 style={styles.sectionTitle}>
                 <img src="Love_Logo_Rose_et_Trans_Rond.png" alt="" style={styles.logoSmall} />
-                Aperçu
+                {t.preview}
               </h2>
               <div style={styles.canvasContainer}>
                 <canvas ref={canvasRef} style={styles.canvas} />
               </div>
               {!dessinImage && (
                 <p style={styles.placeholder}>
-                  {isMobile ? '👇 Choisissez un dessin ci-dessous' : '← Sélectionnez un dessin pour voir l\'aperçu'}
+                  {isMobile ? t.placeholderMobile : t.placeholderDesktop}
                 </p>
               )}
             </div>
@@ -816,21 +937,34 @@
             <div style={styles.panel}>
               <h2 style={styles.sectionTitle}>
                 <img src="Love_Logo_Rose_et_Trans_Rond.png" alt="" style={styles.logoSmall} />
-                Édition
+                {t.edition}
               </h2>
+
+              {/* Sélecteur de langue */}
+              <div style={styles.fieldGroup}>
+                <label style={styles.label}>{t.language}</label>
+                <select
+                  value={langue}
+                  onChange={(e) => setLangue(e.target.value)}
+                  style={styles.select}
+                >
+                  <option value="fr" style={{ background: colors.fondPrincipal, color: colors.texte }}>🇫🇷 Français</option>
+                  <option value="en" style={{ background: colors.fondPrincipal, color: colors.texte }}>🇬🇧 English</option>
+                </select>
+              </div>
 
               {/* Sélection du dessin */}
               <div style={styles.fieldGroup}>
-                <label style={styles.label}>🎨 Sélectionner un dessin</label>
+                <label style={styles.label}>{t.selectDrawing}</label>
                 <select
                   value={selectedDessinId}
                   onChange={handleDessinSelect}
                   style={styles.select}
                 >
-                  <option value="">-- Choisir un dessin --</option>
+                  <option value="">{t.selectPlaceholder}</option>
                   {DESSINS_DATA.map(dessin => (
                     <option key={dessin.id} value={dessin.id} style={{ background: colors.fondPrincipal, color: colors.texte }}>
-                      {dessin.nom}
+                      {dessin.nom[langue]}
                     </option>
                   ))}
                 </select>
@@ -845,13 +979,13 @@
                     onChange={(e) => setMirrorHorizontal(e.target.checked)}
                     style={styles.checkbox}
                   />
-                  <span style={styles.checkboxText}>🔄 Miroir horizontal</span>
+                  <span style={styles.checkboxText}>{t.horizontalMirror}</span>
                 </label>
               </div>
 
               {/* Titre */}
               <div style={styles.fieldGroup}>
-                <label style={styles.label}>✏️ Titre de l'anecdote</label>
+                <label style={styles.label}>{t.anecdoteTitle}</label>
                 <input
                   type="text"
                   value={titre}
@@ -862,7 +996,7 @@
 
               {/* Dialogue */}
               <div style={styles.fieldGroup}>
-                <label style={styles.label}>💬 Dialogue</label>
+                <label style={styles.label}>{t.dialogue}</label>
                 <textarea
                   value={dialogue}
                   onChange={(e) => setDialogue(e.target.value)}
@@ -873,16 +1007,16 @@
 
               {/* Signature */}
               <div style={styles.fieldGroup}>
-                <label style={styles.label}>🖊️ Votre signature (optionnel)</label>
+                <label style={styles.label}>{t.signature}</label>
                 <input
                   type="text"
                   value={signatureUser}
                   onChange={(e) => setSignatureUser(e.target.value)}
-                  placeholder="Ex: Marie"
+                  placeholder={t.signaturePlaceholder}
                   style={{...styles.input, fontFamily: "'Dancing Script', cursive", fontStyle: 'normal', fontSize: '18px'}}
                 />
                 <div style={{fontSize: '0.75rem', marginTop: '6px', opacity: 0.7, color: colors.roseClair}}>
-                  {signatureUser.trim() ? `Aperçu : "${signatureUser} et TRCK"` : 'Sans signature : "TRCK"'}
+                  {signatureUser.trim() ? t.signaturePreviewWith(signatureUser) : t.signaturePreviewWithout}
                 </div>
               </div>
 
@@ -893,7 +1027,7 @@
                   disabled={!dessinImage}
                   style={styles.button}
                 >
-                  📥 Exporter PNG
+                  {t.exportPNG}
                 </button>
               </div>
             </div>
@@ -905,8 +1039,8 @@
               <header style={styles.headerBanner}>
                 <a href="https://amour.therealcowkiller.com" style={{display: 'block'}}>
                   <img 
-                    src="Amour_Titre_ET_colo_kofi.png" 
-                    alt="AMOUR* ET CHEVEUX BLANCS" 
+                    src={t.bannerImage}
+                    alt={t.bannerAlt}
                     style={{...styles.bannerImage, cursor: 'pointer'}}
                   />
                 </a>
@@ -941,9 +1075,9 @@
                   alt="" 
                   style={styles.footerLogo}
                 />
-                <div style={{ color: colors.rose, fontWeight: '600', fontSize: '1.1rem' }}>AMOUR* ET CHEVEUX BLANCS</div>
+                <div style={{ color: colors.rose, fontWeight: '600', fontSize: '1.1rem' }}>{t.footerTitle}</div>
                 <div style={{ opacity: 0.8, marginTop: '8px', fontSize: '0.9rem' }}>
-                  Une BD sur le joyeux chaos de la parentalité
+                  {t.footerSubtitle}
                 </div>
               </footer>
             </div>
