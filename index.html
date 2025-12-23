@@ -261,8 +261,26 @@
           }
         };
 
+        // Fonction pour récupérer la langue depuis l'URL
+        const getLangueFromURL = () => {
+          const params = new URLSearchParams(window.location.search);
+          const lang = params.get('lang');
+          return (lang === 'en') ? 'en' : 'fr';
+        };
+
+        // Fonction pour mettre à jour l'URL sans recharger la page
+        const updateURLLangue = (newLang) => {
+          const url = new URL(window.location);
+          if (newLang === 'fr') {
+            url.searchParams.delete('lang');
+          } else {
+            url.searchParams.set('lang', newLang);
+          }
+          window.history.pushState({}, '', url);
+        };
+
         function BDGenerator() {
-          const [langue, setLangue] = useState('fr');
+          const [langue, setLangue] = useState(getLangueFromURL());
           const [titre, setTitre] = useState('');
           const [dialogue, setDialogue] = useState('');
           const [signatureUser, setSignatureUser] = useState('');
@@ -276,6 +294,12 @@
 
           // Raccourci pour les traductions
           const t = translations[langue];
+
+          // Changer de langue et mettre à jour l'URL
+          const handleLangueChange = (newLang) => {
+            setLangue(newLang);
+            updateURLLangue(newLang);
+          };
 
           // Mettre à jour le titre de la page quand la langue change
           useEffect(() => {
@@ -707,7 +731,8 @@
               background: `linear-gradient(135deg, ${colors.fondPrincipal} 0%, ${colors.fondSecondaire} 50%, ${colors.fondTertiaire} 100%)`,
               fontFamily: "'Crimson Text', Georgia, serif",
               color: colors.texte,
-              padding: 0
+              padding: 0,
+              position: 'relative'
             },
             headerBanner: {
               width: '100%',
@@ -911,6 +936,24 @@
             },
             fieldGroup: {
               marginBottom: isMobile ? '20px' : '25px'
+            },
+            langSwitcher: {
+              position: 'absolute',
+              top: isMobile ? '10px' : '15px',
+              right: isMobile ? '10px' : '20px',
+              display: 'flex',
+              gap: '8px',
+              zIndex: 100
+            },
+            langButton: {
+              background: 'rgba(0, 0, 0, 0.3)',
+              border: `1px solid ${colors.bordure}`,
+              borderRadius: '8px',
+              padding: isMobile ? '6px 8px' : '8px 10px',
+              fontSize: isMobile ? '1.2rem' : '1.4rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              backdropFilter: 'blur(5px)'
             }
           };
 
@@ -939,19 +982,6 @@
                 <img src="Love_Logo_Rose_et_Trans_Rond.png" alt="" style={styles.logoSmall} />
                 {t.edition}
               </h2>
-
-              {/* Sélecteur de langue */}
-              <div style={styles.fieldGroup}>
-                <label style={styles.label}>{t.language}</label>
-                <select
-                  value={langue}
-                  onChange={(e) => setLangue(e.target.value)}
-                  style={styles.select}
-                >
-                  <option value="fr" style={{ background: colors.fondPrincipal, color: colors.texte }}>🇫🇷 Français</option>
-                  <option value="en" style={{ background: colors.fondPrincipal, color: colors.texte }}>🇬🇧 English</option>
-                </select>
-              </div>
 
               {/* Sélection du dessin */}
               <div style={styles.fieldGroup}>
@@ -1035,6 +1065,32 @@
 
           return (
             <div style={styles.container}>
+              {/* Sélecteur de langue en haut à droite */}
+              <div style={styles.langSwitcher}>
+                <button
+                  onClick={() => handleLangueChange('fr')}
+                  style={{
+                    ...styles.langButton,
+                    opacity: langue === 'fr' ? 1 : 0.5,
+                    transform: langue === 'fr' ? 'scale(1.1)' : 'scale(1)'
+                  }}
+                  title="Français"
+                >
+                  🇫🇷
+                </button>
+                <button
+                  onClick={() => handleLangueChange('en')}
+                  style={{
+                    ...styles.langButton,
+                    opacity: langue === 'en' ? 1 : 0.5,
+                    transform: langue === 'en' ? 'scale(1.1)' : 'scale(1)'
+                  }}
+                  title="English"
+                >
+                  🇬🇧
+                </button>
+              </div>
+
               {/* En-tête avec bannière cliquable */}
               <header style={styles.headerBanner}>
                 <a href="https://amour.therealcowkiller.com" style={{display: 'block'}}>
