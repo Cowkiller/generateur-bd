@@ -261,13 +261,6 @@
           }
         };
 
-        // Fonction pour récupérer la langue depuis l'URL
-        const getLangueFromURL = () => {
-          const params = new URLSearchParams(window.location.search);
-          const lang = params.get('lang');
-          return (lang === 'en') ? 'en' : 'fr';
-        };
-
         // Fonction pour mettre à jour l'URL sans recharger la page
         const updateURLLangue = (newLang) => {
           const url = new URL(window.location);
@@ -280,7 +273,12 @@
         };
 
         function BDGenerator() {
-          const [langue, setLangue] = useState(getLangueFromURL());
+          // Initialiser la langue depuis l'URL dès le départ
+          const [langue, setLangue] = useState(() => {
+            const params = new URLSearchParams(window.location.search);
+            const lang = params.get('lang');
+            return (lang === 'en') ? 'en' : 'fr';
+          });
           const [titre, setTitre] = useState('');
           const [dialogue, setDialogue] = useState('');
           const [signatureUser, setSignatureUser] = useState('');
@@ -289,8 +287,16 @@
           const [selectedDessinId, setSelectedDessinId] = useState('');
           const [fontLoaded, setFontLoaded] = useState(false);
           const [mirrorHorizontal, setMirrorHorizontal] = useState(false);
-          const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+          const [isMobile, setIsMobile] = useState(false);
           const canvasRef = useRef(null);
+
+          // Détecter le mobile au chargement et au redimensionnement
+          useEffect(() => {
+            const checkMobile = () => setIsMobile(window.innerWidth < 768);
+            checkMobile(); // Vérifier immédiatement
+            window.addEventListener('resize', checkMobile);
+            return () => window.removeEventListener('resize', checkMobile);
+          }, []);
 
           // Raccourci pour les traductions
           const t = translations[langue];
@@ -320,13 +326,6 @@
             inputFond: 'rgba(0, 0, 0, 0.3)',  // Fond des inputs
             inputBordure: 'rgba(232, 114, 138, 0.4)'  // Bordure des inputs
           };
-
-          // Détecter le redimensionnement
-          useEffect(() => {
-            const handleResize = () => setIsMobile(window.innerWidth < 768);
-            window.addEventListener('resize', handleResize);
-            return () => window.removeEventListener('resize', handleResize);
-          }, []);
 
           // Charger les polices
           useEffect(() => {
@@ -938,26 +937,33 @@
               marginBottom: isMobile ? '20px' : '25px'
             },
             langSwitcher: {
-              position: 'absolute',
+              position: 'fixed',
               top: isMobile ? '10px' : '15px',
               right: isMobile ? '10px' : '20px',
-              zIndex: 100
+              zIndex: 1000
             },
             langSelect: {
-              background: 'rgba(0, 0, 0, 0.5)',
-              border: `1px solid ${colors.bordure}`,
+              background: 'rgba(0, 0, 0, 0.8)',
+              border: `2px solid ${colors.rose}`,
               borderRadius: '8px',
-              padding: isMobile ? '6px 10px' : '8px 12px',
-              fontSize: isMobile ? '0.85rem' : '0.95rem',
-              color: colors.texteClair,
+              padding: '10px 36px 10px 14px',
+              fontSize: '15px',
+              color: '#ffffff',
+              fontWeight: '500',
               cursor: 'pointer',
               outline: 'none',
-              backdropFilter: 'blur(5px)',
+              backdropFilter: 'blur(10px)',
+              WebkitBackdropFilter: 'blur(10px)',
+              WebkitAppearance: 'none',
+              MozAppearance: 'none',
               appearance: 'none',
-              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23E8728A' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'right 8px center',
-              paddingRight: '28px'
+              backgroundPosition: 'right 12px center',
+              minHeight: '44px',
+              touchAction: 'manipulation',
+              fontFamily: "system-ui, -apple-system, sans-serif",
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
             }
           };
 
